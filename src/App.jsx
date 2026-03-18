@@ -15,6 +15,7 @@ import ContactPage from './pages/ContactPage';
 import TourDetailsPage from './pages/TourDetailsPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
+import FavoritesPage from './pages/FavoritesPage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <Route path="/contacto" element={<ContactPage />} />
               <Route path="/cuenta" element={<ProfilePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/favoritos" element={<FavoritesPage />} />
             </Routes>
           </main>
           

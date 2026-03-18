@@ -16,7 +16,15 @@ const Hero = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
 
-  const [selectedDate, setSelectedDate] = useState('');
+  const [departureDate, setDepartureDate] = useState(null);
+  const [returnDate, setReturnDate] = useState(null);
+  const [activeDateType, setActiveDateType] = useState(null); // 'ida' or 'vuelta'
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const [calendarPosition, setCalendarPosition] = useState('bottom');
+  const searchBarRef = useRef(null);
+  const calendarRef = useRef(null);
 
   const landmarks = [
     { name: 'Canaima', pos: 'top-1/4 left-[15%]', price: '$450', delay: 0.2 },
@@ -48,6 +56,10 @@ const Hero = () => {
       if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
         setShowSuggestions(false);
       }
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false);
+        setActiveDateType(null);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -76,14 +88,73 @@ const Hero = () => {
     handleSearch(term);
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '¿Cuándo viajas?';
-    try {
-      const date = new Date(dateStr + 'T00:00:00');
-      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
-    } catch (e) {
-      return dateStr;
+  const openCalendar = (e, type) => {
+    e.stopPropagation();
+    setActiveDateType(type);
+    
+    // Calculate if it should open top or bottom
+    const rect = e.currentTarget.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const spaceBelow = windowHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    
+    setCalendarPosition(spaceBelow < 400 && spaceAbove > spaceBelow ? 'top' : 'bottom');
+    setShowCalendar(true);
+  };
+
+  const formatDateLabel = (date) => {
+    if (!date) return '¿Cuándo?';
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  };
+
+  const getDaysInMonth = (month, year) => {
+    const date = new Date(year, month, 1);
+    const days = [];
+    while (date.getMonth() === month) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
     }
+    return days;
+  };
+
+  const handleDateSelect = (date) => {
+    if (!date) return;
+    
+    // Don't allow selecting dates before today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) return;
+
+    if (activeDateType === 'ida') {
+      setDepartureDate(date);
+      if (returnDate && date > returnDate) setReturnDate(null);
+      setActiveDateType('vuelta');
+    } else {
+      if (departureDate && date < departureDate) {
+        setDepartureDate(date);
+        setReturnDate(null);
+      } else {
+        setReturnDate(date);
+        setShowCalendar(false);
+        setActiveDateType(null);
+      }
+    }
+  };
+
+  const daysInMonth = useMemo(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const days = getDaysInMonth(month, year);
+    
+    // Fill leading empty days
+    const firstDayOfWeek = days[0].getDay() || 7; // Adjust for Monday start
+    const leadingEmpty = Array(firstDayOfWeek - 1).fill(null);
+    
+    return [...leadingEmpty, ...days];
+  }, [currentMonth]);
+
+  const changeMonth = (offset) => {
+    setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + offset, 1));
   };
 
   return (
@@ -164,107 +235,217 @@ const Hero = () => {
           </p>
         </motion.div>
 
-        {/* Search Bar - Center Bottomish */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 50 }}
+          initial={{ opacity: 0, scale: 0.95, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, type: "spring", bounce: 0.4 }}
-          className="w-full max-w-5xl perspective-[1000px] relative px-4 md:px-0"
+          transition={{ duration: 1, delay: 0.4, type: "spring", bounce: 0.3 }}
+          className="w-full max-w-5xl mt-8 px-4 md:px-0"
+          ref={searchBarRef}
         >
-          <div className="bg-white/10 backdrop-blur-3xl p-2 md:p-4 rounded-[2rem] md:rounded-[4rem] border border-white/20 shadow-[0_50px_100px_rgba(0,0,0,0.6)] flex flex-row items-center gap-2 transform-gpu hover:rotate-x-1 transition-all duration-700 select-none group/search relative">
+          <div className="bg-white/10 backdrop-blur-3xl p-2 rounded-[2rem] md:rounded-full border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col md:flex-row items-center group/search relative">
             
-            {/* Mobile/Desktop Search Input */}
-            <div className="flex-1 flex items-center gap-3 md:gap-5 px-4 md:px-8 py-3 md:py-0 bg-white/5 rounded-[1.5rem] md:rounded-[3rem] group hover:bg-white/10 transition-all border border-transparent hover:border-white/10 relative">
-              <Search className="w-5 h-5 md:w-6 md:h-6 text-brand-teal shrink-0" />
-              <input 
-                type="text" 
-                placeholder="¿A dónde quieres ir?" 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="w-full bg-transparent text-white placeholder:text-white/40 focus:outline-none focus:ring-0 text-sm md:text-[18px] font-bold italic"
-              />
-            </div>
-            
-            {/* Desktop-only Date Picker */}
-            <div 
-              onClick={() => dateInputRef.current?.showPicker?.() || dateInputRef.current?.focus()}
-              className="hidden md:flex flex-1 items-center gap-5 px-8 bg-white/5 rounded-[3rem] group hover:bg-white/10 transition-all border border-transparent hover:border-white/10 cursor-pointer"
-            >
-              <Calendar className="w-6 h-6 text-brand-teal" />
-              <div className="text-left flex-1 min-w-0">
-                <label className="text-[9px] uppercase tracking-[0.4em] font-black text-white/40 block mb-1">Fecha</label>
-                <div className="relative h-6 flex items-center">
-                   <input 
-                     ref={dateInputRef}
-                     type="date" 
-                     value={selectedDate}
-                     onChange={(e) => setSelectedDate(e.target.value)}
-                     className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20"
-                   />
-                   <span className={`text-[17px] font-black italic tracking-tight block truncate ${selectedDate ? 'text-white' : 'text-white/20'}`}>
-                     {formatDate(selectedDate)}
-                   </span>
-                </div>
+            {/* Destination Input */}
+            <div className="w-full md:w-[40%] flex items-center gap-4 px-6 py-3 md:py-4 bg-white/5 rounded-full group hover:bg-white/10 transition-all border border-transparent hover:border-white/10 relative">
+              <MapPin className="w-5 h-5 text-brand-teal group-hover:scale-110 transition-transform shrink-0" />
+              <div className="flex-1 text-left min-w-0">
+                <label className="text-[9px] uppercase tracking-[0.2em] font-black text-white/40 block">Destino</label>
+                <input 
+                  type="text" 
+                  placeholder="¿A dónde quieres ir?" 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  className="w-full bg-transparent text-white placeholder:text-white/20 focus:outline-none focus:ring-0 text-[15px] md:text-[16px] font-black italic tracking-tight"
+                />
               </div>
             </div>
 
-            {/* CTA Button */}
-            <button 
-              onClick={handleSearch}
-              className="bg-brand-teal text-brand-dark px-6 md:px-14 py-4 md:py-7 rounded-[1.5rem] md:rounded-[3rem] font-black uppercase tracking-[0.1em] md:tracking-[0.3em] text-[11px] md:text-[13px] hover:bg-teal-400 active:scale-95 transition-all shadow-xl"
+            <div className="hidden md:block w-px h-8 bg-white/10 mx-1"></div>
+
+            {/* Departure (Ida) */}
+            <div 
+              onClick={(e) => openCalendar(e, 'ida')}
+              className={`w-full md:w-[18%] flex items-center gap-3 px-6 py-4 bg-white/5 rounded-full group hover:bg-white/10 transition-all border-2 cursor-pointer relative z-10 ${activeDateType === 'ida' ? 'border-brand-teal' : 'border-transparent'}`}
             >
-               Buscar
-            </button>
+               <Calendar className="w-4 h-4 text-brand-teal" />
+               <div className="text-left">
+                 <label className="text-[9px] uppercase tracking-[0.2em] font-black text-white/40 block">Ida</label>
+                 <span className={`text-[15px] font-black italic tracking-tight ${departureDate ? 'text-white' : 'text-white/20'}`}>
+                   {formatDateLabel(departureDate)}
+                 </span>
+               </div>
+            </div>
+
+            {/* Return (Vuelta) */}
+            <div 
+              onClick={(e) => openCalendar(e, 'vuelta')}
+              className={`w-full md:w-[18%] flex items-center gap-3 px-6 py-4 bg-white/5 rounded-full group hover:bg-white/10 transition-all border-2 cursor-pointer relative z-10 ${activeDateType === 'vuelta' ? 'border-brand-teal' : 'border-transparent'}`}
+            >
+               <Calendar className="w-4 h-4 text-brand-teal" />
+               <div className="text-left">
+                 <label className="text-[9px] uppercase tracking-[0.2em] font-black text-white/40 block">Vuelta</label>
+                 <span className={`text-[15px] font-black italic tracking-tight ${returnDate ? 'text-white' : 'text-white/20'}`}>
+                   {formatDateLabel(returnDate)}
+                 </span>
+               </div>
+            </div>
+
+            {/* CTA Button */}
+            <div className="w-full md:w-auto p-1 flex-1 md:flex-none">
+              <button 
+                onClick={() => handleSearch()}
+                className="w-full md:w-[140px] h-12 md:h-[56px] flex items-center justify-center gap-3 bg-brand-teal text-brand-dark rounded-full font-black uppercase tracking-[0.2em] text-[12px] hover:bg-teal-400 active:scale-95 transition-all shadow-xl hover:shadow-teal-500/30 group/btn"
+              >
+                 <span>Buscar</span>
+                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
 
             {/* Suggestions Dropdown */}
             <AnimatePresence>
               {showSuggestions && suggestions.length > 0 && (
                 <motion.div
                   ref={suggestionRef}
-                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 15, scale: 0.98 }}
-                  className="absolute top-[calc(100%+15px)] left-0 right-0 md:right-auto md:w-[60%] lg:w-[50%] bg-brand-dark/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] md:rounded-[3.5rem] overflow-hidden z-[100] shadow-[0_50px_100px_rgba(0,0,0,0.9)] mx-4 md:mx-0"
+                  exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                  className="absolute top-[calc(100%+15px)] left-0 md:left-4 w-full md:w-[50%] bg-brand-dark/95 backdrop-blur-3xl border border-white/10 rounded-[2rem] overflow-hidden z-[100] shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
                 >
-                  <div className="p-4 md:p-6 border-b border-white/5 bg-white/5 px-8 md:px-10">
-                    <span className="text-[9px] md:text-[10px] font-black text-brand-teal uppercase tracking-[0.4em] md:tracking-[0.5em]">Sugerencias</span>
-                  </div>
                   {suggestions.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => selectSuggestion(s.title)}
-                      className="w-full text-left px-8 md:px-12 py-5 md:py-8 hover:bg-white/10 transition-all flex items-center justify-between group/item border-b border-white/5 last:border-0"
+                      className="w-full text-left px-8 py-5 hover:bg-white/10 transition-all flex items-center justify-between group/item border-b border-white/5 last:border-0"
                     >
-                      <div className="flex flex-col">
-                        <span className="text-white font-black text-lg md:text-2xl italic tracking-tight group-hover/item:text-brand-teal transition-colors">{s.title}</span>
-                        <span className="text-white/40 text-[9px] md:text-[11px] font-black uppercase tracking-widest leading-relaxed mt-0.5 md:mt-1">{s.region}</span>
+                      <div className="flex flex-col text-left">
+                        <span className="text-white font-black text-lg italic tracking-tight group-hover/item:text-brand-teal transition-colors">{s.title}</span>
+                        <span className="text-white/40 text-[9px] font-black uppercase tracking-widest mt-0.5">{s.region}</span>
                       </div>
-                      <div className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/10 flex items-center justify-center group-hover/item:border-brand-teal group-hover/item:bg-brand-teal group-hover/item:scale-110 transition-all">
-                        <ArrowRight className="w-4 h-4 md:w-6 md:h-6 text-white group-hover/item:translate-x-1 transition-transform" />
-                      </div>
+                      <ArrowRight className="w-4 h-4 text-white/50 group-hover/item:text-brand-teal group-hover/item:translate-x-1 transition-all" />
                     </button>
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-        </motion.div>
 
-        {/* Scroll Indicator */}
-        <motion.div 
-          animate={{ y: [0, 15, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
-        >
-           <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em] rotate-90 mb-4 origin-left">Scroll</span>
-           <div className="w-[1px] h-12 bg-gradient-to-b from-brand-teal to-transparent"></div>
+            {/* Custom Intelligent Calendar */}
+            <AnimatePresence>
+              {showCalendar && (
+                <motion.div
+                  ref={calendarRef}
+                  initial={{ opacity: 0, y: calendarPosition === 'bottom' ? 20 : -20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: calendarPosition === 'bottom' ? 20 : -20, scale: 0.95 }}
+                  className={`absolute left-1/2 -translate-x-1/2 md:translate-x-0 bg-white rounded-[2rem] w-[320px] p-6 shadow-[0_50px_100px_rgba(0,0,0,0.5)] z-[999] border border-slate-100 
+                    ${calendarPosition === 'bottom' ? 'top-[calc(100%+20px)]' : 'bottom-[calc(100%+20px)]'}
+                    ${activeDateType === 'ida' ? 'md:left-[35%]' : 'md:left-[55%]'}
+                  `}
+                >
+                  {/* Triangle Indicator */}
+                  <div className={`absolute left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-slate-100 z-[1000]
+                    ${calendarPosition === 'bottom' ? '-top-2 border-l border-t' : '-bottom-2 border-r border-b'}
+                  `}></div>
+                  <div className="flex items-center justify-between mb-6">
+                    <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-slate-50 rounded-full transition-colors">
+                      <ArrowRight className="w-4 h-4 rotate-180 text-slate-400" />
+                    </button>
+                    <div className="text-center font-black">
+                      <span className="text-brand-dark text-[15px] uppercase tracking-widest">
+                        {currentMonth.toLocaleDateString('es-ES', { month: 'long' })}
+                      </span>
+                      <span className="text-slate-300 ml-2 text-[15px]">{currentMonth.getFullYear()}</span>
+                    </div>
+                    <button onClick={() => changeMonth(1)} className="p-2 hover:bg-slate-50 rounded-full transition-colors">
+                      <ArrowRight className="w-4 h-4 text-slate-400" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-7 mb-4">
+                    {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map(day => (
+                      <div key={day} className="text-[10px] font-black text-slate-400 uppercase text-center">{day}</div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-1">
+                    {daysInMonth.map((date, i) => {
+                      if (!date) return <div key={`empty-${i}`} className="h-10"></div>;
+                      
+                      const isSelected = (departureDate && date.toDateString() === departureDate.toDateString()) || 
+                                       (returnDate && date.toDateString() === returnDate.toDateString());
+                      const isInRange = departureDate && returnDate && date > departureDate && date < returnDate;
+                      
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      const isToday = date.toDateString() === today.toDateString();
+                      const isPast = date < today;
+
+                      return (
+                        <button
+                          key={date.toISOString()}
+                          onClick={() => !isPast && handleDateSelect(date)}
+                          disabled={isPast}
+                          className={`h-10 relative flex items-center justify-center text-[13px] font-bold rounded-xl transition-all
+                            ${isSelected ? 'bg-brand-teal text-white shadow-lg shadow-teal-500/20 z-10' : 
+                              isInRange ? 'bg-teal-50 text-brand-teal' : 
+                              isPast ? 'text-slate-200 cursor-not-allowed' :
+                              'hover:bg-slate-50 text-slate-600'}
+                            ${isToday && !isSelected ? 'border-2 border-brand-teal/30 text-brand-teal font-black' : ''}
+                          `}
+                        >
+                          {date.getDate()}
+                          {isToday && !isSelected && (
+                            <div className="absolute -top-1 -right-1 w-2 h-2 bg-brand-teal rounded-full border-2 border-white"></div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between gap-4">
+                    <div className="flex flex-col">
+                      <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Viajes de</span>
+                      <span className="text-brand-dark font-black text-xs italic">Premium Experience</span>
+                    </div>
+                    <button 
+                      onClick={() => setShowCalendar(false)}
+                      className="text-[10px] font-black text-brand-teal uppercase tracking-widest hover:opacity-70"
+                    >
+                      Listo
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       </div>
 
-       {/* Decorative gradient at bottom */}
-       <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-brand-dark to-transparent z-10 pointer-events-none opacity-50"></div>
+      {/* Scroll Indicator - Lowered Z-index to not interfere with calendar */}
+      <motion.div 
+        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group z-20 transition-opacity duration-300 ${showCalendar ? 'opacity-20 pointer-events-none' : 'opacity-100'}`}
+      >
+         <div className="w-6 h-10 rounded-full border-2 border-white/10 flex justify-center p-1.5 transition-all group-hover:border-brand-teal/40">
+            <motion.div 
+              animate={{ 
+                y: [0, 12, 0],
+                opacity: [1, 0, 1]
+              }}
+              transition={{ 
+                repeat: Infinity, 
+                duration: 2,
+                ease: "easeInOut"
+              }}
+              className="w-1 h-1 bg-brand-teal rounded-full"
+            />
+         </div>
+         <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.4em] group-hover:text-white/50 transition-colors">Explorar</span>
+      </motion.div>
+
+       {/* Styled bottom gradient */}
+       <div className="absolute bottom-0 left-0 w-full h-96 bg-gradient-to-t from-brand-dark via-brand-dark/30 to-transparent z-10 pointer-events-none"></div>
     </section>
+
   );
 };
 

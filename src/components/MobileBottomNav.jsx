@@ -9,7 +9,7 @@ const MobileBottomNav = () => {
   const navItems = [
     { icon: Home, label: 'Inicio', path: '/' },
     { icon: Compass, label: 'Explorar', path: '/destinos' },
-    { icon: Heart, label: 'Favoritos', path: '#' }, // Placeholder for favs
+    { icon: Heart, label: 'Favoritos', path: '/favoritos' },
     { icon: User, label: 'Perfil', path: '/cuenta' },
   ];
 

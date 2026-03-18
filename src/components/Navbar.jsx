@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, UserCircle, ShoppingCart, ChevronRight } from 'lucide-react';
+import { Search, Menu, X, UserCircle, ShoppingCart, ChevronRight, Heart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useFavorites } from '../context/FavoritesContext';
 
 const Navbar = () => {
   const { cartCount, setIsCartOpen } = useCart();
   const { user } = useAuth();
+  const { favorites } = useFavorites();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [navSearch, setNavSearch] = useState('');
@@ -56,8 +58,10 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8 }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          isNavTransparent ? 'py-6 bg-transparent' : 'py-3 bg-white/95 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.05)] border-b border-white/20'
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
+          isNavTransparent 
+            ? 'py-6 bg-white/5 backdrop-blur-md border-b border-white/10' 
+            : 'py-4 bg-white/60 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.06)] border-b border-white/40'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-10">
@@ -94,6 +98,21 @@ const Navbar = () => {
              </div>
              
              <div className="flex items-center gap-2">
+                <Link 
+                   to="/favoritos"
+                   className={`p-2.5 rounded-xl transition-all relative group ${isDarkText ? 'text-brand-dark hover:bg-slate-100' : 'text-white hover:bg-white/10'}`}
+                >
+                   <Heart className="w-5 h-5" strokeWidth={2.5} />
+                   {favorites.length > 0 && (
+                     <motion.span 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm"
+                     >
+                       {favorites.length}
+                     </motion.span>
+                   )}
+                </Link>
                 <button 
                   onClick={() => setIsCartOpen(true)}
                   className={`p-2.5 rounded-xl transition-all relative group ${isDarkText ? 'text-brand-dark hover:bg-slate-100' : 'text-white hover:bg-white/10'}`}
