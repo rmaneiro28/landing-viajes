@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, UserCircle, ShoppingCart, ChevronRight, Heart, MessageCircle } from 'lucide-react';
+import { Search, Menu, X, ShoppingCart, Heart, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
 
 const Navbar = () => {
   const { cartCount, setIsCartOpen } = useCart();
-  const { user } = useAuth();
   const { favorites } = useFavorites();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -134,22 +132,6 @@ const Navbar = () => {
                      </motion.span>
                    )}
                 </button>
-                <Link 
-                  to={user ? "/cuenta" : "/login"}
-                  className={`p-2.5 rounded-xl transition-all flex items-center gap-2 group ${isDarkText ? 'text-brand-dark hover:bg-slate-100' : 'text-white hover:bg-white/10'}`}
-                >
-                   {user ? (
-                     <div className="flex items-center gap-3">
-                        <div className="text-right hidden xl:block">
-                           <p className="text-[10px] font-black leading-tight uppercase tracking-wider">Hola,</p>
-                           <p className="text-[11px] font-black leading-tight uppercase tracking-tighter text-brand-teal truncate max-w-20">{user.name.split(' ')[0]}</p>
-                        </div>
-                        <img src={user.avatar} alt="User" className="w-8 h-8 rounded-full border-2 border-brand-teal shadow-md" />
-                     </div>
-                   ) : (
-                     <UserCircle className="w-6 h-6" strokeWidth={isDarkText ? 2.5 : 2} />
-                   )}
-                </Link>
              </div>
           </div>
 
@@ -216,39 +198,6 @@ const Navbar = () => {
                </div>
                
                <div className="mt-auto space-y-6 pb-6 shrink-0">
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                  >
-                     <Link 
-                       to={user ? "/cuenta" : "/login"}
-                       onClick={() => setIsMobileMenuOpen(false)}
-                       className="flex items-center gap-5 p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm"
-                     >
-                        {user ? (
-                          <>
-                             <img src={user.avatar} alt="User" className="w-16 h-16 rounded-full border-2 border-brand-teal p-0.5 shadow-md" />
-                             <div className="flex-1 text-left">
-                                <p className="font-black text-brand-dark text-xl tracking-tight leading-none mb-1">{user.name}</p>
-                                <p className="text-[10px] font-black text-brand-teal uppercase tracking-[0.2em]">Gestionar Perfil</p>
-                             </div>
-                          </>
-                        ) : (
-                          <>
-                             <div className="w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-inner shrink-0">
-                                <UserCircle className="w-10 h-10 text-brand-dark/30" />
-                             </div>
-                             <div className="flex-1 text-left">
-                                <p className="font-black text-brand-dark text-xl tracking-tight leading-none mb-1">Mi Cuenta</p>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Acceso / Registro</p>
-                             </div>
-                          </>
-                        )}
-                        <ChevronRight className="w-6 h-6 text-slate-300 shrink-0" />
-                     </Link>
-                  </motion.div>
-                  
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
