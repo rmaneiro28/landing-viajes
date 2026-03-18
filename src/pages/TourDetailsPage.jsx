@@ -24,29 +24,43 @@ const TourDetailsPage = () => {
    const [shareMessage, setShareMessage] = useState('');
    const [showShareModal, setShowShareModal] = useState(false);
 
+   const features = useMemo(() => [
+      { icon: <ShieldCheck className="w-6 h-6" />, title: 'Seguro de Viaje', desc: 'Cobertura completa Allianz' },
+      { icon: <Users className="w-6 h-6" />, title: 'Guía Certificado', desc: 'Experto local bilingüe' },
+      { icon: <CheckCircle2 className="w-6 h-6" />, title: 'Pensión Completa', desc: 'Gastronomía regional' },
+   ], []);
+
+   const highlights = useMemo(() => [
+      { icon: <Hotel size={18} />, label: 'Hospedaje', value: 'Eco-Luxury' },
+      { icon: <Plane size={18} />, label: 'Transporte', value: 'Vip Transfer' },
+      { icon: <Coffee size={18} />, label: 'Desayuno', value: 'Incluido' },
+   ], []);
+
    const shareLinks = useMemo(() => [
-     { name: 'Copiar enlace', icon: <Plus className="w-5 h-5 text-white" />, action: async () => {
-         if (!navigator.clipboard) {
-            setShareMessage('Tu navegador no permite copiar. Usa copiar manualmente.');
-            return;
+      {
+         name: 'Copiar enlace', icon: <Plus className="w-5 h-5 text-white" />, action: async () => {
+            if (!navigator.clipboard) {
+               setShareMessage('Tu navegador no permite copiar. Usa copiar manualmente.');
+               return;
+            }
+            try {
+               await navigator.clipboard.writeText(window.location.href);
+               setShareMessage('¡Enlace copiado con éxito!');
+            } catch (err) {
+               setShareMessage('No se pudo copiar el enlace. Intenta manualmente.');
+            }
+            setTimeout(() => setShareMessage(''), 2500);
+            setShowShareModal(false);
          }
-         try {
-            await navigator.clipboard.writeText(window.location.href);
-            setShareMessage('¡Enlace copiado con éxito!');
-         } catch (err) {
-            setShareMessage('No se pudo copiar el enlace. Intenta manualmente.');
+      },
+      {
+         name: 'WhatsApp', icon: <MessageCircle className="w-5 h-5 text-green-500" />, action: () => {
+            const phoneNumber = '584123397066';
+            const message = encodeURIComponent(`Hola Jandy Tours, revisa este tour: ${tour?.title || 'tour'} - ${window.location.href}`);
+            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank', 'noopener,noreferrer');
+            setShowShareModal(false);
          }
-         setTimeout(() => setShareMessage(''), 2500);
-         setShowShareModal(false);
-       }
-     },
-     { name: 'WhatsApp', icon: <MessageCircle className="w-5 h-5 text-green-500" />, action: () => {
-         const phoneNumber = '584123397066';
-         const message = encodeURIComponent(`Hola Jandy Tours, revisa este tour: ${tour?.title || 'tour'} - ${window.location.href}`);
-         window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank', 'noopener,noreferrer');
-         setShowShareModal(false);
-       }
-     }
+      }
    ], [tour?.title]);
 
    const handleShare = async () => {
@@ -119,17 +133,7 @@ const TourDetailsPage = () => {
 
    if (!tour) return null;
 
-   const features = useMemo(() => [
-      { icon: <ShieldCheck className="w-6 h-6" />, title: 'Seguro de Viaje', desc: 'Cobertura completa Allianz' },
-      { icon: <Users className="w-6 h-6" />, title: 'Guía Certificado', desc: 'Experto local bilingüe' },
-      { icon: <CheckCircle2 className="w-6 h-6" />, title: 'Pensión Completa', desc: 'Gastronomía regional' },
-   ], []);
 
-   const highlights = useMemo(() => [
-      { icon: <Hotel size={18} />, label: 'Hospedaje', value: 'Eco-Luxury' },
-      { icon: <Plane size={18} />, label: 'Transporte', value: 'Vip Transfer' },
-      { icon: <Coffee size={18} />, label: 'Desayuno', value: 'Incluido' },
-   ], []);
 
    return (
       <div className="bg-white min-h-screen pb-32 lg:pb-0">
@@ -183,25 +187,38 @@ const TourDetailsPage = () => {
                         </div>
                      </div>
 
-                     <div className="relative">
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white leading-tight mb-3 tracking-tight drop-shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
+                     <div className="inline-block relative">
+                        <div className="absolute -inset-6 md:-inset-8 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-2xl -rotate-1"></div>
+                        <h1 className="relative text-5xl md:text-8xl font-black text-white leading-tight mb-4 tracking-tighter italic drop-shadow-2xl">
                            {tour.title}
                         </h1>
                      </div>
 
-                     <div className="flex flex-wrap items-center gap-2 mt-4">
-                        <span className="inline-flex items-center gap-1 bg-brand-teal text-brand-light text-[10px] md:text-xs font-black uppercase rounded-full px-3 py-1 border border-brand-teal/40">
-                           <MapPin className="w-3 h-3" /> {tour.location}
-                        </span>
-                        <span className="inline-flex items-center gap-1 bg-indigo-500 text-brand-light text-[10px] md:text-xs font-black uppercase rounded-full px-3 py-1 border border-indigo-300/60">
-                           <Clock className="w-3 h-3" /> {tour.duration}
-                        </span>
-                        <span className="inline-flex items-center gap-1 bg-amber-500 text-brand-light text-[10px] md:text-xs font-black uppercase rounded-full px-3 py-1 border border-amber-300/60">
-                           <Users className="w-3 h-3" /> {tour.guests || 'Hasta 12 viajeros'}
-                        </span>
-                        <span className="inline-flex items-center gap-1 bg-emerald-500 text-brand-light text-[10px] md:text-xs font-black uppercase rounded-full px-3 py-1 border border-emerald-300/60">
-                           <Star className="w-3 h-3" /> {tour.rating}
-                        </span>
+                     <div className="flex flex-wrap items-center gap-3 mt-4">
+                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
+                           <MapPin className="text-brand-teal w-3.5 h-3.5" /> {tour.location}
+                        </div>
+                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
+                           <Clock className="text-brand-teal w-3.5 h-3.5" /> {tour.duration}
+                        </div>
+                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
+                           <Users className="text-brand-teal w-3.5 h-3.5" /> {tour.guests || 'Hasta 12 viajeros'}
+                        </div>
+                     </div>
+
+                     <div className="mt-8 w-full md:w-auto bg-white/10 border border-white/20 rounded-[2.5rem] p-6 md:p-8 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between gap-6 relative z-10">
+                           <div>
+                              <p className="text-[10px] uppercase font-black tracking-[0.4em] text-white/50 mb-1.5">Inversión del viaje</p>
+                              <p className="text-3xl md:text-5xl font-black text-white italic leading-none">${tour.price} <span className="text-xs md:text-sm text-white/40 not-italic ml-1">USD</span></p>
+                           </div>
+                           <div className="flex flex-col items-end gap-1.5">
+                              <div className="inline-flex items-center gap-2 bg-brand-teal text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+                                 <Star className="w-3 h-3 fill-white" /> {tour.rating}
+                              </div>
+                              <span className="text-[9px] text-white/30 font-black uppercase tracking-widest">(120 Reviews)</span>
+                           </div>
+                        </div>
                      </div>
 
                      <div className="mt-4">
