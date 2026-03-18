@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Menu, X, UserCircle, ShoppingCart, ChevronRight, Heart } from 'lucide-react';
+import { Search, Menu, X, UserCircle, ShoppingCart, ChevronRight, Heart, MessageCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -45,6 +45,12 @@ const Navbar = () => {
   const isDarkText = isScrolled || location.pathname !== '/';
   const isNavTransparent = !isScrolled && location.pathname === '/';
 
+  const openWhatsAppQuick = () => {
+    const phoneNumber = '584123397066';
+    const message = encodeURIComponent('Hola Jandy Tours, quiero consultar sobre un tour.');
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+  };
+
   const navLinks = [
     { name: 'Destinos', href: '/destinos' },
     { name: 'Paquetes', href: '/paquetes' },
@@ -58,10 +64,10 @@ const Navbar = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8 }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-700  ${
           isNavTransparent 
             ? 'py-6 bg-white/5 backdrop-blur-md border-b border-white/10' 
-            : 'py-4 bg-white/60 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.06)] border-b border-white/40'
+            : 'py-4 bg-white/4 backdrop-blur-md'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-10">
@@ -136,7 +142,7 @@ const Navbar = () => {
                      <div className="flex items-center gap-3">
                         <div className="text-right hidden xl:block">
                            <p className="text-[10px] font-black leading-tight uppercase tracking-wider">Hola,</p>
-                           <p className="text-[11px] font-black leading-tight uppercase tracking-tighter text-brand-teal truncate max-w-[80px]">{user.name.split(' ')[0]}</p>
+                           <p className="text-[11px] font-black leading-tight uppercase tracking-tighter text-brand-teal truncate max-w-20">{user.name.split(' ')[0]}</p>
                         </div>
                         <img src={user.avatar} alt="User" className="w-8 h-8 rounded-full border-2 border-brand-teal shadow-md" />
                      </div>
@@ -160,6 +166,14 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
+      <button
+        onClick={openWhatsAppQuick}
+        className="fixed bottom-24 right-4 z-50 bg-[#25D366] text-white p-3 rounded-full shadow-2xl border border-white/60 hover:scale-105 transition-all"
+        aria-label="Chat WhatsApp"
+      >
+        <MessageCircle className="w-5 h-5" />
+      </button>
+
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -167,7 +181,7 @@ const Navbar = () => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 bg-white z-[99999] flex flex-col"
+            className="fixed inset-0 bg-white z-99999 flex flex-col"
           >
             <div className="flex-1 flex flex-col p-8 overflow-y-auto">
                <div className="flex items-center justify-between mb-16 shrink-0">

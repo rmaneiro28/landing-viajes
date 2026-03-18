@@ -81,7 +81,7 @@ const ContactPage = () => {
                   
                   {[
                     { icon: <MapPin />, t: 'Ubicación', v: 'Av. Francisco de Miranda, Edif. Parque Cristal, Caracas 1060, Venezuela.', c: 'bg-teal-50 text-brand-teal' },
-                    { icon: <Phone />, t: 'Teléfonos', v: '+58 (212) 555-0123 \n +58 (414) 123-4567', c: 'bg-orange-50 text-orange-500' },
+                    { icon: <Phone />, t: 'Teléfonos', v: '+58 (412) 339-7066 \n +58 (414) 123-4567', c: 'bg-orange-50 text-orange-500' },
                     { icon: <Clock />, t: 'Horario de Atención', v: 'Lun - Vie: 8:00 AM - 6:00 PM \n Sáb: 9:00 AM - 2:00 PM', c: 'bg-indigo-50 text-indigo-500' }
                   ].map(item => (
                     <div key={item.t} className="flex gap-8 group">

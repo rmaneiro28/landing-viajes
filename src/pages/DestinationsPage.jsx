@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Filter, Star, Clock, Globe, ArrowRight, ChevronDown, Search, X, MapPin, SlidersHorizontal, ShoppingCart, Heart } from 'lucide-react';
+import { Filter, Star, ChevronDown, Search, X, MapPin, SlidersHorizontal, Heart } from 'lucide-react';
 import { TOURS } from '../data/tours';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
@@ -98,6 +98,13 @@ const DestinationsPage = () => {
   }, [filteredTours, currentPage, itemsPerPage]);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(typeof window !== 'undefined' ? window.innerWidth >= 1024 : true);
+
+  useEffect(() => {
+    const onResize = () => setIsLargeScreen(window.innerWidth >= 1024);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   return (
     <div className="pt-24 md:pt-28 pb-20 bg-[#f4f7f6] min-h-screen">
@@ -110,40 +117,74 @@ const DestinationsPage = () => {
           <span className="text-slate-600">Explorar Destinos</span>
         </nav>
 
-        {/* Mobile Filter Bar - Horizontal Scroll */}
-        <div className="lg:hidden mb-6 flex items-center justify-between border-b border-slate-200/60 pb-4 overflow-x-auto no-scrollbar gap-3 px-1">
-           <div className="flex items-center gap-2 shrink-0">
+        {/* Mobile Filter & Sort Bar - More Premium */}
+        <div className="lg:hidden sticky top-20 z-40 -mx-4 md:-mx-12 px-4 md:px-12 py-4 mb-8 bg-[#f4f7f6]/80 backdrop-blur-md border-b border-white/50">
+           <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1">
               <button 
                 onClick={() => setIsFilterOpen(true)}
-                className="bg-brand-teal text-brand-dark px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-wider shadow-lg shadow-teal-500/20"
+                className="bg-brand-dark text-white px-5 py-3 rounded-2xl flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest shadow-xl shadow-brand-dark/20 active:scale-95 transition-all"
               >
-                 <SlidersHorizontal className="w-4 h-4" /> Filtros
+                 <SlidersHorizontal className="w-4 h-4 text-brand-teal" /> Filtros
               </button>
               
-              {['Precio', 'Ubicación', 'Calificación'].map((filter) => (
-                <button 
-                  key={filter}
-                  className="bg-white border border-slate-200 text-slate-500 px-4 py-2.5 rounded-xl flex items-center gap-2 text-[10px] font-black uppercase tracking-wider"
-                >
-                  {filter} <ChevronDown className="w-3 h-3" />
-                </button>
-              ))}
-           </div>
-           <div className="flex items-center gap-1 shrink-0 text-brand-teal text-[10px] font-black uppercase tracking-widest pl-4">
-              <Filter className="w-3.5 h-3.5" /> Relevancia
+              <div className="flex items-center gap-2 flex-wrap">
+                 <button 
+                   onClick={() => setIsFilterOpen(true)}
+                   className="px-5 py-3 rounded-2xl bg-brand-teal text-brand-dark text-[11px] font-black uppercase tracking-widest border border-brand-teal shadow-sm"
+                 >
+                   Filtros
+                 </button>
+
+                 <button
+                   onClick={() => setIsFilterOpen(true)}
+                   className="bg-brand-dark text-white px-4 py-2 rounded-2xl flex items-center gap-2 text-[11px] font-black uppercase tracking-widest"
+                 >
+                   <SlidersHorizontal className="w-3.5 h-3.5" /> Filtros
+                 </button>
+
+                 <button
+                   onClick={() => setMaxPrice(1500)}
+                   className="px-3 py-2 rounded-full border border-brand-teal bg-brand-teal/15 text-brand-dark text-[10px] font-black flex items-center gap-1"
+                 >
+                   Precio ${maxPrice} <X className="w-3 h-3" />
+                 </button>
+
+                 <button
+                   onClick={() => setSelectedDurations([])}
+                   className="px-3 py-2 rounded-full border border-brand-teal bg-brand-teal/15 text-brand-dark text-[10px] font-black flex items-center gap-1"
+                 >
+                   Días <X className="w-3 h-3" />
+                 </button>
+
+                 <button
+                   onClick={() => setSelectedActivities([])}
+                   className="px-3 py-2 rounded-full border border-brand-teal bg-brand-teal/15 text-brand-dark text-[10px] font-black flex items-center gap-1"
+                 >
+                   Aventura <X className="w-3 h-3" />
+                 </button>
+
+                 <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                 
+                 <button 
+                   onClick={() => setIsSortOpen(true)}
+                   className="bg-white border border-slate-100 text-brand-teal px-5 py-3 rounded-2xl flex items-center gap-2 text-[11px] font-black uppercase tracking-widest shrink-0"
+                 >
+                   <Filter className="w-3.5 h-3.5" /> {sortOptions.find(o => o.id === sortBy)?.label.split(':')[0]}
+                 </button>
+              </div>
            </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
+        <div className="flex flex-col lg:flex-row  gap-8 lg:gap-10 items-start">
           
           {/* Sidebar Filters */}
           <AnimatePresence>
-            {(isFilterOpen || (typeof window !== 'undefined' && window.innerWidth >= 1024)) && (
+            {(isFilterOpen || isLargeScreen) && (
               <motion.aside 
                 initial={isFilterOpen ? { x: -300, opacity: 0 } : {}}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -300, opacity: 0 }}
-                className={`${isFilterOpen ? 'fixed inset-0 z-[100] bg-white p-8 overflow-y-auto' : 'hidden lg:block w-[320px] shrink-0 space-y-6'}`}
+                className={`${isFilterOpen ? 'fixed inset-0 z-100 bg-white  p-8 pt-8 pb-16 overflow-y-auto' : 'hidden lg:block w-80 shrink-0 space-y-6 '}`}
               >
                 {isFilterOpen && (
                   <div className="flex items-center justify-between mb-10">
@@ -233,12 +274,14 @@ const DestinationsPage = () => {
                   </div>
 
                   {isFilterOpen && (
-                    <button 
-                      onClick={() => setIsFilterOpen(false)}
-                      className="w-full mt-12 bg-brand-dark text-white py-6 rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl"
-                    >
-                       Aplicar Cambios
-                    </button>
+                    <div className="sticky bottom-0 left-0 right-0 z-50 mt-6 bg-linear-to-t from-white/95 via-white/70 to-transparent p-3 pt-0">
+                      <button 
+                        onClick={() => setIsFilterOpen(false)}
+                        className="w-full bg-brand-dark text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl"
+                      >
+                        Aplicar Cambios
+                      </button>
+                    </div>
                   )}
                 </div>
               </motion.aside>
@@ -253,12 +296,12 @@ const DestinationsPage = () => {
                 <p className="text-slate-400 font-bold italic text-sm">Basado en tus preferencias de búsqueda</p>
               </div>
               
-              <div className="flex items-center gap-4 relative">
+              <div className="hidden md:flex items-center gap-4 relative">
                 <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Ordenar por:</span>
                 <div className="relative">
                    <button 
                      onClick={() => setIsSortOpen(!isSortOpen)}
-                     className="bg-white border border-slate-100 pl-6 pr-4 py-3.5 rounded-2xl text-[12px] font-black text-brand-dark shadow-sm flex items-center gap-4 hover:border-brand-teal transition-all min-w-[200px] justify-between"
+                     className="bg-white border border-slate-100 pl-6 pr-4 py-3.5 rounded-2xl text-[12px] font-black text-brand-dark shadow-sm flex items-center gap-4 hover:border-brand-teal transition-all min-w-50 justify-between"
                    >
                      {sortOptions.find(o => o.id === sortBy)?.label}
                      <ChevronDown className={`w-4 h-4 text-brand-teal transition-transform duration-300 ${isSortOpen ? 'rotate-180' : ''}`} />
@@ -270,7 +313,7 @@ const DestinationsPage = () => {
                          initial={{ opacity: 0, y: 10 }}
                          animate={{ opacity: 1, y: 0 }}
                          exit={{ opacity: 0, y: 10 }}
-                         className="absolute top-full right-0 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-[40]"
+                         className="absolute top-full right-0 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-40"
                        >
                          {sortOptions.map(opt => (
                            <button 
@@ -301,7 +344,7 @@ const DestinationsPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="bg-white rounded-[2rem] overflow-hidden shadow-xl shadow-slate-200/50 border border-slate-50 transition-all flex flex-col h-full"
+                      className="bg-white rounded-4xl overflow-hidden shadow-xl shadow-slate-200/50 border border-slate-50 transition-all flex flex-col h-full"
                     >
                       <div className="relative h-64 overflow-hidden shrink-0">
                         <OptimizedImage 

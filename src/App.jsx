@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import SEO from './components/SEO';
@@ -7,15 +7,16 @@ import CartDrawer from './components/CartDrawer';
 import MobileBottomNav from './components/MobileBottomNav';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import DestinationsPage from './pages/DestinationsPage';
-import PackagesPage from './pages/PackagesPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import TourDetailsPage from './pages/TourDetailsPage';
-import ProfilePage from './pages/ProfilePage';
-import LoginPage from './pages/LoginPage';
-import FavoritesPage from './pages/FavoritesPage';
+
+const Home = lazy(() => import('./pages/Home'));
+const DestinationsPage = lazy(() => import('./pages/DestinationsPage'));
+const PackagesPage = lazy(() => import('./pages/PackagesPage'));
+const TourDetailsPage = lazy(() => import('./pages/TourDetailsPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
 
 function App() {
   return (
@@ -34,17 +35,19 @@ function App() {
           <Navbar />
           
           <main className="pb-24 lg:pb-0 relative">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/destinos" element={<DestinationsPage />} />
-              <Route path="/paquetes" element={<PackagesPage />} />
-              <Route path="/paquetes/:id" element={<TourDetailsPage />} />
-              <Route path="/nosotros" element={<AboutPage />} />
-              <Route path="/contacto" element={<ContactPage />} />
-              <Route path="/cuenta" element={<ProfilePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/favoritos" element={<FavoritesPage />} />
-            </Routes>
+            <Suspense fallback={<div className="min-h-screen grid place-items-center text-brand-dark font-black">Cargando...</div>}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/destinos" element={<DestinationsPage />} />
+                <Route path="/paquetes" element={<PackagesPage />} />
+                <Route path="/paquetes/:id" element={<TourDetailsPage />} />
+                <Route path="/nosotros" element={<AboutPage />} />
+                <Route path="/contacto" element={<ContactPage />} />
+                <Route path="/cuenta" element={<ProfilePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/favoritos" element={<FavoritesPage />} />
+              </Routes>
+            </Suspense>
           </main>
           
           <MobileBottomNav />

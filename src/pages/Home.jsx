@@ -12,7 +12,7 @@ const Home = () => {
       <Hero />
       <Destinations />
       <WhyUs />
-      <div className="w-full h-24 bg-gradient-to-b from-slate-50 to-brand-dark pointer-events-none"></div>
+      <div className="w-full h-24 bg-linear-to-b from-slate-50 to-brand-dark pointer-events-none"></div>
       <Testimonials />
       <div className="bg-white">
         <ContactFAQ />

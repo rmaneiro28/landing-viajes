@@ -53,9 +53,9 @@ export const CartProvider = ({ children }) => {
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
-  const checkoutWithWhatsApp = () => {
-    const phoneNumber = '584141234567'; // Change to actual Jandy Tours number
-    const messageHeader = '¡Hola Jandy Tours! 👋 Deseo realizar la reserva de los siguientes paquetes:\n\n';
+  const checkoutWithWhatsApp = ({ name, phone }) => {
+    const phoneNumber = '584123397066'; // Change to actual Jandy Tours number
+    const messageHeader = `¡Hola Jandy Tours! 👋 Soy ${name || 'un cliente'}. Mi teléfono es ${phone || 'no proporcionado'}. Deseo realizar la reserva de los siguientes paquetes:\n\n`;
     const itemsList = cartItems
       .map((item) => `- *${item.title}* (${item.quantity}x) - $${item.price * item.quantity}`)
       .join('\n');

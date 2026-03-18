@@ -12,7 +12,8 @@ export const TOURS = [
     tag: 'BEST SELLER',
     category: 'Aventura',
     activities: ['Naturaleza', 'Aventura', 'Ecoturismo'],
-    description: 'Nuestra expedición Canaima Premium incluye sobrevuelo al Salto Ángel, alojamiento frente a la laguna y tour guiado de 3 días / 2 noches. Reencuéntrate con la majestuosidad de la tierra más antigua del mundo.'
+    description: 'Nuestra expedición Canaima Premium incluye sobrevuelo al Salto Ángel, alojamiento frente a la laguna y tour guiado de 3 días / 2 noches. Reencuéntrate con la majestuosidad de la tierra más antigua del mundo.',
+    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026', '01 Jul 2026']
   },
   {
     id: 'los-roques-paraiso',
@@ -27,7 +28,8 @@ export const TOURS = [
     tag: 'LUJO',
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Navegación'],
-    description: 'Desconéctate en el archipiélago más exclusivo del Caribe venezolano. Incluye boletos aéreos, posada de lujo con pensión completa y paseos diarios a los cayos más remotos.'
+    description: 'Desconéctate en el archipiélago más exclusivo del Caribe venezolano. Incluye boletos aéreos, posada de lujo con pensión completa y paseos diarios a los cayos más remotos.',
+    availableDates: ['14 Jun 2026', '21 Jun 2026', '28 Jun 2026']
   },
   {
     id: 'cumbres-de-merida',
@@ -42,7 +44,8 @@ export const TOURS = [
     tag: 'NIEVE',
     category: 'Aventura',
     activities: ['Cultura e Historia', 'Aventura', 'Naturaleza'],
-    description: 'Explora los Andes venezolanos. Subida al teleférico Mukumbarí, tours por pueblos pintorescos y lagunas de altura. Un viaje lleno de tradición y paisajes alpinos.'
+    description: 'Explora los Andes venezolanos. Subida al teleférico Mukumbarí, tours por pueblos pintorescos y lagunas de altura. Un viaje lleno de tradición y paisajes alpinos.',
+    availableDates: ['01 Jul 2026', '08 Jul 2026', '15 Jul 2026']
   },
   {
     id: 'misterios-gran-sabana',
@@ -57,7 +60,8 @@ export const TOURS = [
     tag: 'NATURALEZA',
     category: 'Aventura',
     activities: ['Naturaleza', 'Aventura'],
-    description: 'Un viaje al corazón de la tierra. Expediciones en 4x4 por los tepuyes y cascadas infinitas. Siente la energía ancestral de los paisajes más antiguos del planeta.'
+    description: 'Un viaje al corazón de la tierra. Expediciones en 4x4 por los tepuyes y cascadas infinitas. Siente la energía ancestral de los paisajes más antiguos del planeta.',
+    availableDates: ['18 Jul 2026', '25 Jul 2026', '01 Aug 2026']
   },
   {
     id: 'morrocoy-cayos-exclusive',
@@ -72,7 +76,8 @@ export const TOURS = [
     tag: 'OFERTA',
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Navegación'],
-    description: 'Navega por los manglares y disfruta de los cayos más hermosos de Falcón en una lancha privada. Posada boutique con atención de primera clase.'
+    description: 'Navega por los manglares y disfruta de los cayos más hermosos de Falcón en una lancha privada. Posada boutique con atención de primera clase.',
+    availableDates: ['05 Jun 2026', '12 Jun 2026', '19 Jun 2026']
   },
   {
     id: 'coro-dunas-patrimonio',
@@ -87,7 +92,8 @@ export const TOURS = [
     tag: 'CULTURA',
     category: 'Cultura e Historia',
     activities: ['Cultura e Historia', 'Gastronomía'],
-    description: 'Patrimonio de la Humanidad y desierto costero. Historia colonial y atardeceres mágicos en las dunas de Coro.'
+    description: 'Patrimonio de la Humanidad y desierto costero. Historia colonial y atardeceres mágicos en las dunas de Coro.',
+    availableDates: ['02 Jun 2026', '09 Jun 2026', '16 Jun 2026']
   },
   {
     id: 'la-tortuga-expedition',
@@ -101,7 +107,8 @@ export const TOURS = [
     rating: 4.8,
     category: 'Playa y Relax',
     activities: ['Aventura', 'Navegación'],
-    description: 'Siente la soledad paradisíaca de la isla La Tortuga. Camping de lujo frente a aguas cristalinas que parecen de cristal.'
+    description: 'Siente la soledad paradisíaca de la isla La Tortuga. Camping de lujo frente a aguas cristalinas que parecen de cristal.',
+    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026']
   },
   {
     id: 'mochima-bahia-lujo',
@@ -115,6 +122,7 @@ export const TOURS = [
     rating: 4.7,
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Gastronomía'],
-    description: 'Crucero por las islas del Parque Nacional Mochima. Disfruta de la mejor gastronomía marina y delfines en su hábitat natural.'
+    description: 'Crucero por las islas del Parque Nacional Mochima. Disfruta de la mejor gastronomía marina y delfines en su hábitat natural.',
+    availableDates: ['22 Jun 2026', '29 Jun 2026', '06 Jul 2026']
   }
 ];

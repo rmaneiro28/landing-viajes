@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Plus, Minus, Send, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const CartDrawer = () => {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal, checkoutWithWhatsApp } = useCart();
 
   return (
@@ -124,15 +126,36 @@ const CartDrawer = () => {
                     </div>
                  </div>
 
+                 <div className="space-y-3">
+                    <div className="space-y-1 text-left">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-500">Nombre completo</label>
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Ej. Ana María"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
+                      />
+                    </div>
+                    <div className="space-y-1 text-left">
+                      <label className="text-[10px] uppercase tracking-widest font-black text-slate-500">Teléfono</label>
+                      <input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+58 412 339 7066"
+                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-brand-teal/30"
+                      />
+                    </div>
+                 </div>
                  <button 
-                   onClick={checkoutWithWhatsApp}
-                   className="w-full bg-[#25D366] text-white py-6 rounded-[2rem] font-black uppercase tracking-widest text-sm shadow-xl shadow-emerald-500/20 active:translate-y-px transition-all flex items-center justify-center gap-4 group"
+                   onClick={() => checkoutWithWhatsApp({ name, phone })}
+                   disabled={!name.trim() || !phone.trim()}
+                   className="w-full bg-[#25D366] disabled:opacity-50 disabled:cursor-not-allowed text-white py-6 rounded-[2rem] font-black uppercase tracking-widest text-sm shadow-xl shadow-emerald-500/20 active:translate-y-px transition-all flex items-center justify-center gap-4 group"
                  >
                    <Send className="w-5 h-5 group-hover:-rotate-12 transition-transform" />
                    Finalizar pedido por WhatsApp
                  </button>
                  <p className="text-[10px] text-center text-slate-400 italic">
-                    Serás redirigido a WhatsApp para concretar tu reserva con un asesor especializado.
+                    Solo necesitas nombre y teléfono para enviar tu pedido rápido.
                  </p>
               </div>
             )}
