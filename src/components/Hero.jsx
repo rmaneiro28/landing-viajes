@@ -126,7 +126,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-screen min-h-[750px] flex items-center justify-center overflow-hidden bg-brand-dark overflow-x-hidden">
+    <section className="relative h-screen min-h-[700px] md:min-h-[850px] flex items-center justify-center overflow-hidden bg-brand-dark overflow-x-hidden pt-20 md:pt-0">
       {/* Background with cinematic overlay */}
       <div className="absolute inset-0 z-0">
         <OptimizedImage
@@ -136,57 +136,58 @@ const Hero = () => {
           containerClassName="w-full h-full"
           priority={true}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/40 via-brand-dark/10 to-brand-dark/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-dark/60 via-brand-dark/20 to-brand-dark/95 md:from-brand-dark/40 md:via-brand-dark/10 md:to-brand-dark/90" />
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl px-6 text-center mt-20">
+      <div className="relative z-10 w-full max-w-7xl px-4 md:px-6 text-center mt-10 md:mt-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="flex flex-col items-center"
         >
-          <p className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/20 px-6 py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-[0.4em] mb-8 text-white/90 shadow-2xl">
+          <p className="inline-flex items-center gap-2 md:gap-3 bg-white/5 backdrop-blur-md border border-white/20 px-4 md:px-6 py-2 rounded-full text-[9px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.4em] mb-6 md:mb-8 text-white/90 shadow-2xl">
             <Star className="w-3 h-3 text-brand-teal fill-brand-teal" /> Experiencia Premium en Venezuela
           </p>
 
-          <div className="relative inline-block mb-12">
-            <h1 className="relative text-6xl md:text-[8rem] xl:text-[10rem] font-black leading-[0.9] text-white tracking-tighter italic drop-shadow-2xl">
+          <div className="relative inline-block mb-8 md:mb-12">
+            <h1 className="relative text-5xl sm:text-6xl md:text-[7rem] xl:text-[9rem] font-black leading-[0.95] md:leading-[0.9] text-white tracking-tighter italic drop-shadow-2xl">
               Explora el <br className="hidden lg:block" />
               <span className="text-brand-teal not-italic">Salto Ángel</span>
             </h1>
           </div>
 
-          <p className="max-w-2xl mx-auto text-base md:text-xl text-white/70 font-semibold italic mb-12 leading-relaxed text-balance">
+          <p className="max-w-2xl mx-auto text-sm sm:text-base md:text-xl text-white/70 font-semibold italic mb-10 md:mb-12 leading-relaxed px-4 md:px-0 text-balance">
             Diseñamos aventuras personalizadas con guías de élite en los paisajes más sobrecogedores del mundo.
           </p>
 
           {/* Advanced Search Concierge */}
-          <div className="max-w-5xl mx-auto bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-3 md:p-3 shadow-2xl relative">
-            <div className="flex flex-col lg:flex-row items-center gap-1">
+          <div className="max-w-5xl mx-auto bg-white/5 backdrop-blur-3xl border border-white/20 rounded-3xl md:rounded-[2.5rem] p-2 md:p-3 shadow-2xl relative">
+            <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 lg:gap-1">
 
               {/* Destination Field */}
               <div className="relative group w-full lg:w-[40%]">
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-brand-teal transition-colors">
-                  <MapPin className="w-5 h-5" />
+                <div className="absolute left-5 md:left-6 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-brand-teal transition-colors">
+                  <MapPin className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
-                  placeholder="¿Hacia dónde te lleva tu instinto?"
-                  className="w-full rounded-[1.8rem] bg-white/10 border border-transparent pl-15 pr-6 py-5 md:py-6 text-white placeholder:text-white/30 focus:outline-none focus:bg-white/15 focus:border-white/20 transition-all font-bold italic text-lg"
+                  placeholder="¿Hacia dónde vas?"
+                  className="w-full rounded-2xl md:rounded-[1.8rem] bg-white/10 border border-transparent pl-12 md:pl-14 pr-4 md:pr-6 py-4 md:py-6 text-white placeholder:text-white/40 focus:outline-none focus:bg-white/15 focus:border-white/20 transition-all font-bold italic text-base md:text-lg"
                 />
 
                 {suggestions.length > 0 && (
-                  <div className="absolute left-0 right-0 mt-3 overflow-hidden rounded-[2rem] bg-brand-dark/95 backdrop-blur-3xl border border-white/10 p-3 text-left shadow-2xl z-50">
+                  <div className="absolute left-0 right-0 mt-2 md:mt-3 overflow-hidden rounded-2xl md:rounded-[2rem] bg-brand-dark/95 backdrop-blur-3xl border border-white/10 p-2 md:p-3 text-left shadow-2xl z-50">
                     {suggestions.map((s, i) => (
                       <button
                         key={i}
                         onClick={() => { setSearch(s.title); }}
-                        className="w-full flex items-center justify-between px-6 py-4 text-sm font-bold text-white hover:bg-brand-teal hover:text-brand-dark transition-all rounded-xl mb-1 last:mb-0"
+                        className="w-full flex items-center justify-between px-4 md:px-6 py-3 md:py-4 text-xs md:text-sm font-bold text-white hover:bg-brand-teal hover:text-brand-dark transition-all rounded-xl mb-1 last:mb-0 group/btn"
                       >
-                        <span>{s.title} <span className="text-white/40 group-hover:text-brand-dark/50 ml-2 font-normal">| {s.region}</span></span>
-                        <ArrowRight size={14} className="opacity-0 group-hover:opacity-100" />
+                        <span className="truncate">{s.title} <span className="text-white/40 group-hover/btn:text-brand-dark/50 ml-2 font-normal">| {s.region}</span></span>
+                        <ArrowRight size={14} className="opacity-0 group-hover/btn:opacity-100 flex-shrink-0 ml-2" />
                       </button>
                     ))}
                   </div>
@@ -197,28 +198,28 @@ const Hero = () => {
               <div className="hidden lg:block w-px h-12 bg-white/10 mx-2"></div>
 
               {/* Date Fields */}
-              <div className="flex w-full lg:w-[45%] gap-2 p-1">
+              <div className="flex flex-row w-full lg:w-[45%] gap-2 p-1">
                 <button
                   onClick={() => { setShowCalendar(true); setSelectingType('departure'); }}
-                  className={`flex-1 flex flex-col items-start px-6 py-4 rounded-[1.8rem] transition-all hover:bg-white/10 group text-left ${showCalendar && selectingType === 'departure' ? 'bg-white/15' : ''}`}
+                  className={`flex-1 flex flex-col items-start px-4 md:px-6 py-3 md:py-4 rounded-2xl md:rounded-[1.8rem] transition-all hover:bg-white/10 group text-left ${showCalendar && selectingType === 'departure' ? 'bg-white/15' : ''}`}
                 >
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-brand-teal">Ida</span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Calendar className="w-4 h-4 text-brand-teal/70" />
-                    <span className="text-white font-bold italic">{formatDate(departureDate)}</span>
+                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-brand-teal">Ida</span>
+                  <div className="flex items-center gap-1.5 md:gap-2 mt-1 w-full overflow-hidden">
+                    <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-teal/70 flex-shrink-0" />
+                    <span className="text-white font-bold italic text-sm md:text-base truncate">{formatDate(departureDate)}</span>
                   </div>
                 </button>
 
-                <div className="w-px h-10 bg-white/10 self-center"></div>
+                <div className="w-px h-8 md:h-10 bg-white/10 self-center"></div>
 
                 <button
                   onClick={() => { setShowCalendar(true); setSelectingType('return'); }}
-                  className={`flex-1 flex flex-col items-start px-6 py-4 rounded-[1.8rem] transition-all hover:bg-white/10 group text-left ${showCalendar && selectingType === 'return' ? 'bg-white/15' : ''}`}
+                  className={`flex-1 flex flex-col items-start px-4 md:px-6 py-3 md:py-4 rounded-2xl md:rounded-[1.8rem] transition-all hover:bg-white/10 group text-left ${showCalendar && selectingType === 'return' ? 'bg-white/15' : ''}`}
                 >
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-brand-teal">Vuelta</span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Calendar className="w-4 h-4 text-brand-teal/70" />
-                    <span className="text-white font-bold italic">{formatDate(returnDate)}</span>
+                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-brand-teal">Vuelta</span>
+                  <div className="flex items-center gap-1.5 md:gap-2 mt-1 w-full overflow-hidden">
+                    <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-teal/70 flex-shrink-0" />
+                    <span className="text-white font-bold italic text-sm md:text-base truncate">{formatDate(returnDate)}</span>
                   </div>
                 </button>
               </div>
@@ -227,7 +228,7 @@ const Hero = () => {
               <div className="w-full lg:w-[15%] p-1">
                 <button
                   onClick={() => handleSearch()}
-                  className="w-full group relative overflow-hidden rounded-[1.8rem] bg-brand-teal text-brand-dark font-black uppercase tracking-widest text-xs py-5 md:py-6 hover:bg-white transition-all shadow-xl shadow-teal-500/20 active:scale-95"
+                  className="w-full h-full flex items-center justify-center group relative overflow-hidden rounded-2xl md:rounded-[1.8rem] bg-brand-teal text-brand-dark font-black uppercase tracking-widest text-xs py-4 md:py-6 hover:bg-white transition-all shadow-xl shadow-teal-500/20 active:scale-95"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     <span className="lg:hidden">Explorar</span> <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -241,26 +242,26 @@ const Hero = () => {
               {showCalendar && (
                 <motion.div
                   ref={calendarRef}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-full lg:w-[320px] bg-brand-dark/95 backdrop-blur-3xl border border-white/20 rounded-[2.5rem] p-6 shadow-3xl z-[100]"
+                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                  className="absolute top-[105%] left-0 lg:left-1/2 lg:-translate-x-1/2 mt-2 w-full lg:w-[340px] bg-brand-dark/95 backdrop-blur-3xl border border-white/20 rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 shadow-3xl z-[100]"
                 >
-                  <div className="flex items-center justify-between mb-6">
-                    <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-white/60 hover:text-white">
-                      <ChevronLeft size={20} />
+                  <div className="flex items-center justify-between mb-5 md:mb-6">
+                    <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/10 rounded-full text-white/60 hover:text-white transition-colors">
+                      <ChevronLeft size={18} className="md:w-5 md:h-5" />
                     </button>
-                    <h3 className="text-white font-black italic uppercase tracking-tighter">
+                    <h3 className="text-white font-black italic uppercase tracking-tighter text-sm md:text-base">
                       {currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
                     </h3>
-                    <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-white/60 hover:text-white">
-                      <ChevronRight size={20} />
+                    <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/10 rounded-full text-white/60 hover:text-white transition-colors">
+                      <ChevronRight size={18} className="md:w-5 md:h-5" />
                     </button>
                   </div>
 
                   <div className="grid grid-cols-7 gap-1 mb-2">
                     {['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(d => (
-                      <div key={d} className="text-center text-[10px] font-black text-white/30 py-2">{d}</div>
+                      <div key={d} className="text-center text-[10px] md:text-xs font-black text-white/30 py-2">{d}</div>
                     ))}
                     {calendarDays.map((date, i) => (
                       <button
@@ -268,7 +269,7 @@ const Hero = () => {
                         disabled={isPast(date)}
                         onClick={() => selectDate(date)}
                         className={`
-                            relative h-10 w-full rounded-xl text-xs font-bold transition-all flex items-center justify-center
+                            relative h-9 md:h-10 w-full rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all flex items-center justify-center
                             ${!date ? 'pointer-events-none' : ''}
                             ${isSelected(date) ? 'bg-brand-teal text-brand-dark' : 'text-white hover:bg-white/10'}
                             ${isInRange(date) ? 'bg-brand-teal/20 text-brand-teal' : ''}
@@ -278,18 +279,20 @@ const Hero = () => {
                       >
                         {date?.getDate()}
                         {isSelected(date) && (
-                          <motion.div layoutId="active-date" className="absolute inset-0 bg-brand-teal rounded-xl -z-10" />
+                          <motion.div layoutId="active-date" className="absolute inset-0 bg-brand-teal rounded-lg md:rounded-xl -z-10" />
                         )}
                       </button>
                     ))}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
+                  <div className="mt-5 md:mt-6 pt-4 border-t border-white/10 flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-[9px] font-black uppercase text-white/30">Seleccionando:</span>
-                      <span className="text-xs font-bold text-brand-teal italic">{selectingType === 'departure' ? 'Fecha de Ida' : 'Fecha de Vuelta'}</span>
+                      <span className="text-[8px] md:text-[9px] font-black uppercase text-white/30">Seleccionando:</span>
+                      <span className="text-[10px] md:text-xs font-bold text-brand-teal italic">{selectingType === 'departure' ? 'Fecha de Ida' : 'Fecha de Vuelta'}</span>
                     </div>
-                    <button onClick={() => setShowCalendar(false)} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white">Cerrar</button>
+                    <button onClick={() => setShowCalendar(false)} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+                      Cerrar
+                    </button>
                   </div>
                 </motion.div>
               )}

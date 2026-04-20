@@ -1,4 +1,3 @@
-import React from 'react';
 import Hero from '../components/Hero';
 import Destinations from '../components/Destinations';
 import WhyUs from '../components/WhyUs';
