@@ -7,11 +7,10 @@ import OptimizedImage from './OptimizedImage';
 const destinations = [
   {
     id: 'canaima-salto-angel',
-    title: 'Laguna de Canaima',
+    title: 'Canaima',
     description: 'Naturaleza pura y paisajes ancestrales. Descubre los tepuyes desde una curiara tradicional.',
     image: '/canaima.png',
     label: 'AVENTURA',
-    price: '$350',
   },
   {
     id: 'los-roques-paraiso',
@@ -19,15 +18,13 @@ const destinations = [
     description: 'Aguas cristalinas y arena blanca en el caribe venezolano. El paraíso del snorkel.',
     image: '/los_roques.png',
     label: 'RELAX',
-    price: '$420',
   },
   {
     id: 'merida-sierra-nevada',
-    title: 'Pico Bolívar',
-    description: 'La cumbre más alta de Venezuela. Una expedición hacia las nieves eternas de los Andes.',
+    title: 'Mérida',
+    description: 'Explora los Andes venezolanos con paisajes de altura, teleférico y pueblos coloniales llenos de tradición.',
     image: '/merida.png',
     label: 'AVENTURA',
-    price: '$280',
   }
 ];
 
@@ -75,18 +72,13 @@ const Destinations = () => {
                     {dest.description}
                   </p>
                   
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex flex-col">
-                       <p className="text-brand-dark font-black text-xl tracking-tighter italic">
-                         {dest.price} <span className="text-[10px] text-slate-400 not-italic ml-1 uppercase tracking-widest">/ pers</span>
-                       </p>
-                    </div>
-                    <Link 
-                      to={`/paquetes/${dest.id}`}
-                      className="px-6 py-2.5 bg-[#e2f9f8] text-brand-teal font-black text-[11px] rounded-xl hover:bg-brand-teal hover:text-white transition-all uppercase tracking-widest"
-                    >
-                       Ver más
-                    </Link>
+                  <div className="flex items-center justify-end mt-auto">
+                     <Link 
+                       to={`/paquetes/${dest.id}`}
+                       className="px-6 py-2.5 bg-[#e2f9f8] text-brand-teal font-black text-[11px] rounded-xl hover:bg-brand-teal hover:text-white transition-all uppercase tracking-widest"
+                     >
+                        Detalles
+                     </Link>
                   </div>
                </div>
             </div>

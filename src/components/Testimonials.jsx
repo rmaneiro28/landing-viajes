@@ -1,19 +1,35 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const testimonials = [
   {
     name: 'Anna Martinez',
     role: 'AVENTURA LOVER',
-    quote: 'La mejor experiencia de mi vida. Jandy Tours cuidó cada detalle del viaje al Salto Ángel. Altamente recomendados.',
+    stars: 5,
+    quote: 'La mejor experiencia de mi vida. Tendida Tours cuidó cada detalle del viaje al Salto Ángel. Altamente recomendados.',
     image: 'https://i.pravatar.cc/150?u=anna'
   },
   {
     name: 'Carlos Ruiz',
     role: 'LUXURY TRAVELER',
-    quote: 'Increíble logística y guías muy preparados. Canaima es un lugar mágico y lo vivimos al máximo.',
+    stars: 5,
+    quote: 'Increíble logística de la mano de Trotamundos Tours. Canaima es un lugar mágico y lo vivimos al máximo con guías muy preparados.',
     image: 'https://i.pravatar.cc/150?u=carlos'
+  },
+  {
+    name: 'María Fernanda R.',
+    role: 'VIAJERA FRECUENTE',
+    stars: 5,
+    quote: 'Viajé con Paradise Travel a Los Roques y la experiencia fue increíble. Todo estuvo bien organizado desde el traslado hasta las actividades en el archipiélago. La atención fue constante y me sentí segura durante todo el viaje.',
+    image: 'https://i.pravatar.cc/150?u=mariafernanda'
+  },
+  {
+    name: 'Carlos J. Morales',
+    role: 'EXPLORADOR',
+    stars: 4,
+    quote: 'Reservé un paquete a Margarita con Venezuela Travels. En general el viaje fue bueno, los hoteles cumplían con lo esperado y la información del destino fue clara. Hubo un pequeño retraso en la coordinación inicial, pero luego todo fluyó sin problemas.',
+    image: 'https://i.pravatar.cc/150?u=carlosmorales'
   }
 ];
 
@@ -27,7 +43,7 @@ const Testimonials = () => {
            </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {testimonials.map((test, i) => (
             <motion.div
               key={test.name}
@@ -44,8 +60,11 @@ const Testimonials = () => {
                 <div className="text-left">
                   <h4 className="text-brand-dark font-black text-xl leading-none">{test.name}</h4>
                   <div className="flex gap-0.5 mt-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-[#0ed3cf] text-[#0ed3cf]" />
+                    {[...Array(5)].map((_, j) => (
+                      <Star
+                        key={j}
+                        className={`w-3.5 h-3.5 ${j < test.stars ? 'fill-[#0ed3cf] text-[#0ed3cf]' : 'fill-slate-200 text-slate-200'}`}
+                      />
                     ))}
                   </div>
                 </div>

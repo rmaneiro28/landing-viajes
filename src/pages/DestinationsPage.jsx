@@ -66,8 +66,6 @@ const DestinationsPage = () => {
         tour.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tour.region.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesPrice = tour.price <= maxPrice;
-      
       const matchesActivities = selectedActivities.length === 0 ||
         tour.activities.some(act => selectedActivities.includes(act));
       
@@ -77,7 +75,7 @@ const DestinationsPage = () => {
           return tour.durationDays >= option.min && tour.durationDays <= option.max;
         });
 
-      return matchesSearch && matchesPrice && matchesActivities && matchesDuration;
+      return matchesSearch && matchesActivities && matchesDuration;
     });
 
     if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
@@ -85,11 +83,11 @@ const DestinationsPage = () => {
     if (sortBy === 'rating') result.sort((a, b) => b.rating - a.rating);
 
     return result;
-  }, [searchTerm, maxPrice, selectedDurations, selectedActivities, sortBy]);
+  }, [searchTerm, selectedDurations, selectedActivities, sortBy]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, maxPrice, selectedDurations, selectedActivities, sortBy]);
+  }, [searchTerm, selectedDurations, selectedActivities, sortBy]);
 
   const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
   const paginatedTours = useMemo(() => {
@@ -129,14 +127,6 @@ const DestinationsPage = () => {
               
               <div className="flex items-center gap-2 shrink-0">
                  {/* Active Filter Chips */}
-                 {maxPrice < 1500 && (
-                   <button
-                     onClick={() => setMaxPrice(1500)}
-                     className="px-3 py-2.5 rounded-2xl border border-brand-teal bg-brand-teal/10 text-brand-dark text-[10px] font-black flex items-center gap-1.5 whitespace-nowrap shadow-sm"
-                   >
-                     Max ${maxPrice} <X className="w-3 h-3 text-brand-teal" />
-                   </button>
-                 )}
 
                  {selectedDurations.length > 0 && (
                    <button
@@ -165,7 +155,7 @@ const DestinationsPage = () => {
                    </button>
                  )}
 
-                 {(maxPrice < 1500 || selectedDurations.length > 0 || selectedActivities.length > 0 || searchTerm) && (
+                 {(selectedDurations.length > 0 || selectedActivities.length > 0 || searchTerm) && (
                    <div className="w-px h-6 bg-slate-200 mx-1"></div>
                  )}
                  
@@ -208,7 +198,6 @@ const DestinationsPage = () => {
                     <button 
                       onClick={() => {
                         setSearchTerm('');
-                        setMaxPrice(1500);
                         setSelectedDurations([]);
                         setSelectedActivities([]);
                       }}
@@ -216,27 +205,6 @@ const DestinationsPage = () => {
                     >
                       Limpiar
                     </button>
-                  </div>
-
-                  {/* Price Range */}
-                  <div className="mb-10">
-                    <label className="text-[11px] font-black text-slate-400 block mb-6 uppercase tracking-[0.2em]">Presupuesto Máximo</label>
-                    <div className="px-2">
-                       <input 
-                         type="range" 
-                         min="100" 
-                         max="1500" 
-                         step="50"
-                         value={maxPrice}
-                         onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-                         className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-teal mb-4"
-                       />
-                    </div>
-                    <div className="flex justify-between text-[11px] font-bold text-slate-500 italic">
-                      <span>$100</span>
-                      <span className="text-brand-dark font-black not-italic text-lg">${maxPrice}</span>
-                      <span>$1500+</span>
-                    </div>
                   </div>
 
                   {/* Duration */}
@@ -393,17 +361,11 @@ const DestinationsPage = () => {
                           <span>{tour.location}</span>
                         </div>
 
-                        <div className="mt-auto flex items-center justify-between gap-4">
-                          <div className="flex flex-col">
-                            <p className="text-brand-dark font-black text-2xl tracking-tighter">
-                              ${tour.price} <span className="text-[11px] text-slate-400 font-bold uppercase tracking-widest ml-1 italic">/ noche</span>
-                            </p>
-                          </div>
-                          
-                          <div className="bg-brand-teal text-brand-dark px-6 py-2.5 rounded-xl font-black text-[12px] shadow-lg shadow-teal-500/20 active:scale-95 transition-all">
-                             Ver Detalles
-                          </div>
-                        </div>
+                        <div className="mt-auto flex items-center justify-end gap-4">
+                           <div className="bg-brand-teal text-brand-dark px-6 py-2.5 rounded-xl font-black text-[12px] shadow-lg shadow-teal-500/20 active:scale-95 transition-all">
+                              Ver Detalles
+                           </div>
+                         </div>
                       </div>
                     </motion.div>
                   </Link>
@@ -415,11 +377,10 @@ const DestinationsPage = () => {
                     <Search className="w-8 h-8 text-slate-300" />
                   </div>
                   <h3 className="text-xl font-black text-brand-dark mb-3 italic">No hay destinos disponibles</h3>
-                  <p className="text-slate-500 italic font-medium mb-10 max-w-sm mx-auto">Prueba ajustando el rango de precio o selecciona otras actividades.</p>
+                  <p className="text-slate-500 italic font-medium mb-10 max-w-sm mx-auto">Prueba ajustando los filtros o selecciona otras actividades.</p>
                   <button
                     onClick={() => {
                       setSearchTerm('');
-                      setMaxPrice(1500);
                       setSelectedDurations([]);
                       setSelectedActivities([]);
                     }}

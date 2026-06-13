@@ -1,117 +1,69 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TOURS } from '../data/tours';
-import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import OptimizedImage from '../components/OptimizedImage';
 import {
-   ArrowLeft, Star, Clock, MapPin, ShieldCheck, CheckCircle2,
-   MessageCircle, Calendar, Users, Info, ChevronRight,
-   Play, Plus, Heart, Share2, ShoppingCart, Camera,
-   Map as MapIcon, Coffee, Plane, Hotel
+   ArrowLeft, Star, MapPin, ShieldCheck, CheckCircle2,
+   MessageCircle, Users, ChevronRight,
+   Heart, Share2, Sun, Compass, Wind,
+   Coffee, Plane, Hotel, Phone
 } from 'lucide-react';
+
+// Agencias disponibles por destino
+const AGENCIES = [
+  { name: 'Paradise Travel', tipo: 'Operadora de Turismo', tel: '+58 412-345-6789' },
+  { name: 'Trotamundos Tours', tipo: 'Agencia de Viajes', tel: '+58 424-234-5678' },
+  { name: 'Venezuela Travels', tipo: 'Operadora de Turismo', tel: '+58 416-789-1234' },
+  { name: 'Aventuras VZ', tipo: 'Guía y Transporte', tel: '+58 414-567-8901' },
+  { name: 'Caribe Expediciones', tipo: 'Tours Náuticos', tel: '+58 412-890-1234' },
+];
 
 const TourDetailsPage = () => {
    const { id } = useParams();
-   const navigate = useNavigate();
-   const { addToCart } = useCart();
    const { toggleFavorite, isFavorite } = useFavorites();
    const [tour, setTour] = useState(null);
    const [tourNotFound, setTourNotFound] = useState(false);
    const [activeTab, setActiveTab] = useState('itinerario');
-   const [selectedDates, setSelectedDates] = useState([]);
-   const [shareMessage, setShareMessage] = useState('');
    const [showShareModal, setShowShareModal] = useState(false);
+   const [copied, setCopied] = useState(false);
 
    const features = useMemo(() => [
-      { icon: <ShieldCheck className="w-6 h-6" />, title: 'Seguro de Viaje', desc: 'Cobertura completa Allianz' },
-      { icon: <Users className="w-6 h-6" />, title: 'Guía Certificado', desc: 'Experto local bilingüe' },
-      { icon: <CheckCircle2 className="w-6 h-6" />, title: 'Pensión Completa', desc: 'Gastronomía regional' },
+      { icon: <ShieldCheck className="w-5 h-5" />, title: 'Seguro de Viaje', desc: 'Cobertura completa' },
+      { icon: <Users className="w-5 h-5" />, title: 'Guía Certificado', desc: 'Experto local' },
+      { icon: <CheckCircle2 className="w-5 h-5" />, title: 'Pensión Completa', desc: 'Gastronomía regional' },
    ], []);
 
    const highlights = useMemo(() => [
-      { icon: <Hotel size={18} />, label: 'Hospedaje', value: 'Eco-Luxury' },
-      { icon: <Plane size={18} />, label: 'Transporte', value: 'Vip Transfer' },
-      { icon: <Coffee size={18} />, label: 'Desayuno', value: 'Incluido' },
+      { icon: <Hotel size={20} />, label: 'Hospedaje', value: 'Eco-Luxury' },
+      { icon: <Plane size={20} />, label: 'Transporte', value: 'VIP Transfer' },
+      { icon: <Coffee size={20} />, label: 'Desayuno', value: 'Incluido' },
+      { icon: <Wind size={20} />, label: 'Clima', value: 'Tropical' },
    ], []);
-
-   const shareLinks = useMemo(() => [
-      {
-         name: 'Copiar enlace', icon: <Plus className="w-5 h-5 text-white" />, action: async () => {
-            if (!navigator.clipboard) {
-               setShareMessage('Tu navegador no permite copiar. Usa copiar manualmente.');
-               return;
-            }
-            try {
-               await navigator.clipboard.writeText(window.location.href);
-               setShareMessage('¡Enlace copiado con éxito!');
-            } catch (err) {
-               setShareMessage('No se pudo copiar el enlace. Intenta manualmente.');
-            }
-            setTimeout(() => setShareMessage(''), 2500);
-            setShowShareModal(false);
-         }
-      },
-      {
-         name: 'WhatsApp', icon: <MessageCircle className="w-5 h-5 text-green-500" />, action: () => {
-            const phoneNumber = '584123397066';
-            const message = encodeURIComponent(`Hola Jandy Tours, revisa este tour: ${tour?.title || 'tour'} - ${window.location.href}`);
-            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank', 'noopener,noreferrer');
-            setShowShareModal(false);
-         }
-      }
-   ], [tour?.title]);
 
    const handleShare = async () => {
       if (navigator.share) {
          try {
-            await navigator.share({
-               title: `Reserva ${tour?.title}`,
-               text: `Mira este tour: ${tour?.title} - ${tour?.location}`,
-               url: window.location.href,
-            });
+            await navigator.share({ title: tour?.title, url: window.location.href });
             return;
-         } catch (err) {
-            // continue to fallback
-         }
+         } catch (_) {}
       }
       setShowShareModal(true);
    };
 
-   const openWhatsAppQuick = () => {
-      if (!tour) return;
-      const phoneNumber = '584123397066';
-      const message = encodeURIComponent(`Hola Jandy Tours! Quiero reservar el tour "${tour.title}".`);
-      window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank', 'noopener,noreferrer');
-   };
-
-   const handleReserve = () => {
-      if (!tour) return;
-      if (!selectedDates.length) {
-         setShareMessage('Selecciona una fecha antes de reservar.');
-         setTimeout(() => setShareMessage(''), 2500);
-         return;
-      }
-      addToCart({ ...tour, selectedDates });
-      setShareMessage('Tour añadido al carrito con tus fechas.');
-      setTimeout(() => setShareMessage(''), 2500);
-   };
-
-   const toggleDateSelection = (date) => {
-      setSelectedDates(prev => {
-         if (prev.includes(date)) {
-            return prev.filter(d => d !== date);
-         }
-         return [...prev, date];
-      });
+   const handleCopy = async () => {
+      try {
+         await navigator.clipboard.writeText(window.location.href);
+         setCopied(true);
+         setTimeout(() => { setCopied(false); setShowShareModal(false); }, 2000);
+      } catch (_) {}
    };
 
    useEffect(() => {
       const foundTour = TOURS.find(t => t.id === id);
       if (foundTour) {
          setTour(foundTour);
-         setSelectedDates(foundTour.availableDates ? [foundTour.availableDates[0]] : []);
          window.scrollTo(0, 0);
          setTourNotFound(false);
       } else {
@@ -121,11 +73,12 @@ const TourDetailsPage = () => {
 
    if (tourNotFound) {
       return (
-         <div className="min-h-screen flex items-center justify-center bg-[#f4f7f6] p-4">
-            <div className="max-w-md bg-white p-8 rounded-3xl border border-slate-200 text-center shadow-lg">
-               <h1 className="text-2xl font-black text-brand-dark mb-3">Tour no encontrado</h1>
-               <p className="text-slate-500 mb-6">No pudimos encontrar ese paquete. Regresa a explorar otros destinos.</p>
-               <Link to="/destinos" className="bg-brand-teal text-white px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-teal-600 transition-all">Ver destinos</Link>
+         <div className="min-h-screen flex items-center justify-center bg-amber-50 p-4">
+            <div className="max-w-md bg-white p-8 rounded-2xl border border-amber-100 text-center shadow-lg">
+               <Sun className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+               <h1 className="text-2xl font-black text-brand-dark mb-3">Destino no encontrado</h1>
+               <p className="text-slate-500 mb-6">No pudimos encontrar ese destino. Explora nuestros otros destinos.</p>
+               <Link to="/destinos" className="bg-brand-teal text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-teal-600 transition-all">Ver destinos</Link>
             </div>
          </div>
       );
@@ -133,177 +86,134 @@ const TourDetailsPage = () => {
 
    if (!tour) return null;
 
-
-
    return (
-      <div className="bg-white min-h-screen pb-32 lg:pb-0">
-         {/* Header Image Section */}
-         <section className="relative h-[80vh] md:h-[85vh] min-h-145 md:min-h-162.5 overflow-hidden">
+      <div className="bg-[#fdfaf6] min-h-screen">
+
+         {/* ── HERO IMAGEN ── */}
+         <section className="relative h-[75vh] md:h-[85vh] min-h-[560px] overflow-hidden">
             <OptimizedImage
                src={tour.image}
                alt={tour.title}
-               className="w-full h-full object-cover mask-b-from-7"
+               className="w-full h-full object-cover"
                containerClassName="w-full h-full"
                priority={true}
             />
-            <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-brand-dark/20 to-transparent"></div>
+            {/* Gradiente cálido - más denso en la base */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0d1a0a] via-[#1a0f00]/60 to-[#1a0f00]/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
 
-            {/* Top Controls - Increased spacing */}
-            <div className="absolute top-28 md:top-36 left-0 w-full px-4 md:px-6 z-20">
+            {/* Controles top */}
+            <div className="absolute top-28 md:top-32 left-0 w-full px-5 md:px-8 z-20">
                <div className="max-w-7xl mx-auto flex justify-between items-center">
-                  <Link to="/destinos" className="group flex items-center gap-2 bg-white/10 backdrop-blur-2xl border border-white/20 px-5 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[9px] md:text-[11px] hover:bg-brand-teal hover:border-brand-teal transition-all">
+                  <Link to="/paquetes" className="group flex items-center gap-2 bg-black/20 backdrop-blur-xl border border-white/20 px-4 py-3 rounded-xl text-white font-black uppercase tracking-widest text-[10px] hover:bg-brand-teal hover:border-brand-teal transition-all">
                      <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Volver
                   </Link>
-                  <div className="flex gap-2 items-center">
-                     <button onClick={handleShare} className="p-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all">
-                        <Share2 size={18} />
+                  <div className="flex gap-2">
+                     <button onClick={handleShare} className="p-3 bg-black/20 backdrop-blur-xl border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all">
+                        <Share2 size={17} />
                      </button>
                      <button
                         onClick={() => toggleFavorite(tour)}
-                        className={`p-3 rounded-xl transition-all ${isFavorite(tour.id) ? 'bg-brand-teal text-white' : 'bg-white text-brand-teal border border-white/20'}`}
+                        className={`p-3 rounded-xl transition-all ${isFavorite(tour.id) ? 'bg-rose-500 text-white border border-rose-400' : 'bg-black/20 backdrop-blur-xl border border-white/20 text-white hover:bg-rose-500/20'}`}
                      >
-                        <Heart size={18} fill={isFavorite(tour.id) ? "currentColor" : "none"} strokeWidth={isFavorite(tour.id) ? 0 : 2} />
+                        <Heart size={17} fill={isFavorite(tour.id) ? 'currentColor' : 'none'} />
                      </button>
                   </div>
                </div>
             </div>
 
-            {/* Hero Content */}
-            <div className="absolute bottom-16 md:bottom-24 left-0 w-full px-6 z-20">
+            {/* Contenido hero */}
+            <div className="absolute bottom-0 left-0 w-full px-5 md:px-8 pb-10 md:pb-16 z-20">
                <div className="max-w-7xl mx-auto">
                   <motion.div
-                     initial={{ opacity: 0, y: 30 }}
+                     initial={{ opacity: 0, y: 24 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="max-w-4xl"
+                     transition={{ duration: 0.7 }}
                   >
-                     <div className="flex flex-wrap items-center gap-3 mb-8">
-                        <div className="px-5 py-2 bg-brand-teal rounded-full text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-teal-500/40">
+                     {/* Badges */}
+                     <div className="flex flex-wrap items-center gap-2 mb-5">
+                        <span className="px-4 py-1.5 bg-amber-400 text-amber-900 text-[10px] font-black uppercase tracking-widest rounded-full shadow-md">
                            {tour.tag || tour.category}
-                        </div>
-                        <div className="flex items-center gap-1.5 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
-                           <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                           <span className="text-white text-xs font-black">{tour.rating}</span>
-                           <span className="text-white text-[10px] ml-1 font-bold">(120 Reseñas)</span>
-                        </div>
+                        </span>
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-black shadow-md">
+                           <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> {tour.rating} · 120 reseñas
+                        </span>
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-black shadow-md">
+                           <MapPin className="w-3 h-3 text-brand-teal" /> {tour.location}
+                        </span>
                      </div>
 
-                     <div className="inline-block relative">
-                        <div className="absolute -inset-6 md:-inset-8 bg-white/5 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-2xl -rotate-1"></div>
-                        <h1 className="relative text-5xl md:text-8xl font-black text-white leading-tight mb-4 tracking-tighter italic drop-shadow-2xl">
-                           {tour.title}
-                        </h1>
-                     </div>
+                     {/* Título */}
+                     <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white leading-[1] tracking-tighter mb-6"
+                        style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8), 0 4px 40px rgba(0,0,0,0.6)' }}
+                     >
+                        {tour.title}
+                     </h1>
 
-                     <div className="flex flex-wrap items-center gap-3 mt-4">
-                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
-                           <MapPin className="text-brand-teal w-3.5 h-3.5" /> {tour.location}
-                        </div>
-                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
-                           <Clock className="text-brand-teal w-3.5 h-3.5" /> {tour.duration}
-                        </div>
-                        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-2xl border border-white/10 text-white text-[10px] md:text-xs font-black uppercase tracking-widest shadow-lg">
-                           <Users className="text-brand-teal w-3.5 h-3.5" /> {tour.guests || 'Hasta 12 viajeros'}
-                        </div>
-                     </div>
-
-                     <div className="mt-8 w-full md:w-auto bg-white/10 border border-white/20 rounded-[2.5rem] p-6 md:p-8 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
-                        <div className="flex items-center justify-between gap-6 relative z-10">
-                           <div>
-                              <p className="text-[10px] uppercase font-black tracking-[0.4em] text-white/50 mb-1.5">Inversión del viaje</p>
-                              <p className="text-3xl md:text-5xl font-black text-white italic leading-none">${tour.price} <span className="text-xs md:text-sm text-white/40 not-italic ml-1">USD</span></p>
-                           </div>
-                           <div className="flex flex-col items-end gap-1.5">
-                              <div className="inline-flex items-center gap-2 bg-brand-teal text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
-                                 <Star className="w-3 h-3 fill-white" /> {tour.rating}
+                     {/* Highlights rápidos */}
+                     <div className="flex flex-wrap gap-3">
+                        {highlights.map((h, i) => (
+                           <div key={i} className="flex items-center gap-3 bg-black/50 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
+                              <span className="text-brand-teal w-5 h-5">{h.icon}</span>
+                              <div>
+                                 <div className="text-[10px] text-white/60 font-black uppercase tracking-wider">{h.label}</div>
+                                 <div className="text-sm text-white font-black drop-shadow-sm">{h.value}</div>
                               </div>
-                              <span className="text-[9px] text-white/30 font-black uppercase tracking-widest">(120 Reviews)</span>
                            </div>
-                        </div>
-                     </div>
-
-                     <div className="mt-4">
-                        <div className="text-[10px] uppercase tracking-[0.2em] text-white/80 font-black mb-2">Fechas disponibles</div>
-                        <div className="flex flex-wrap gap-2">
-                           {tour.availableDates?.map((date) => (
-                              <button
-                                 key={date}
-                                 onClick={() => toggleDateSelection(date)}
-                                 className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border transition-all ${selectedDates.includes(date) ? 'bg-white text-brand-dark border-transparent' : 'bg-white/15 text-white border-white/40 hover:bg-white/30'}`}
-                              >
-                                 {date}
-                              </button>
-                           ))}
-                        </div>
-                        <div className="mt-2 text-[11px] text-white/80">
-                           {selectedDates.length > 0 ? `${selectedDates.length} fecha(s) seleccionada(s): ${selectedDates.join(', ')}` : 'Selecciona tus fechas preferidas.'}
-                        </div>
+                        ))}
                      </div>
                   </motion.div>
                </div>
             </div>
          </section>
 
-         {/* Highlights Bar */}
-         <div className="relative z-30 -mt-10 md:px-0">
-            <div className="max-w-4xl mx-auto px-4">
-               <div className="bg-white p-3 md:p-4 rounded-2xl shadow-xl border border-slate-200 sm:grid sm:grid-cols-3 gap-2">
-                  {highlights.map((h, i) => (
-                     <div key={i} className="flex items-center gap-2 p-2 sm:p-3 bg-slate-50 rounded-2xl border border-slate-200 hover:shadow-md transition-all">
-                        <div className="w-9 h-9 bg-brand-teal/10 text-brand-teal rounded-xl flex items-center justify-center text-lg">
-                           {h.icon}
-                        </div>
-                        <div className="text-left">
-                           <div className="text-[9px] font-black text-slate-500 uppercase tracking-wide">{h.label}</div>
-                           <div className="text-[11px] font-black text-brand-dark">{h.value}</div>
-                        </div>
+         {/* ── CONTENIDO PRINCIPAL ── */}
+         <div className="max-w-7xl mx-auto px-5 md:px-8 py-14 md:py-20">
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+
+               {/* Columna izquierda */}
+               <div className="lg:col-span-8 space-y-14">
+
+                  {/* Descripción */}
+                  <div>
+                     <div className="flex items-center gap-3 mb-6">
+                        <Compass className="w-5 h-5 text-amber-500" />
+                        <h2 className="text-2xl md:text-3xl font-black text-brand-dark tracking-tight">Sobre este destino</h2>
+                        <div className="flex-1 h-px bg-amber-100"></div>
                      </div>
-                  ))}
-               </div>
-            </div>
-         </div>
-
-         <section className="py-14 md:py-20 px-4 md:px-6 max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-12 gap-10 md:gap-14">
-
-               {/* Left Content */}
-               <div className="lg:col-span-8 space-y-16 md:space-y-24">
-
-                  <div className="space-y-8 md:space-y-12">
-                     <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex items-center gap-4 bg-brand-teal/10 border border-brand-teal/20 rounded-2xl px-4 py-2">
-                           <span className="text-[10px] uppercase font-black tracking-[0.25em] text-brand-teal">Tour Premium</span>
-                           <span className="text-[10px] uppercase font-black tracking-[0.25em] text-brand-dark">Incluye transporte</span>
-                        </div>
-                        <h2 className="text-3xl md:text-5xl font-black text-brand-dark italic tracking-tighter">La Experiencia</h2>
-                        <div className="h-px bg-slate-100 flex-1"></div>
-                     </div>
-                     <p className="text-base md:text-xl text-slate-500 font-semibold italic leading-relaxed text-balance">
+                     <p className="text-slate-600 text-base md:text-lg leading-relaxed font-medium">
                         {tour.description}
                      </p>
-                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 pt-6">
+
+                     {/* Feature cards */}
+                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
                         {features.map((f, i) => (
-                           <div key={i} className="bg-slate-50 p-8 rounded-[2.5rem] border border-white flex flex-col items-start gap-4 hover:shadow-2xl hover:shadow-slate-200 transition-all border-l-4 border-l-brand-teal group">
-                              <div className="text-brand-teal bg-white p-4 rounded-2xl group-hover:scale-110 group-hover:bg-brand-teal group-hover:text-white transition-all shadow-sm">{f.icon}</div>
+                           <div key={i} className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-amber-100 shadow-sm hover:shadow-md hover:border-brand-teal/30 transition-all group">
+                              <div className="w-10 h-10 rounded-xl bg-brand-teal/10 text-brand-teal flex items-center justify-center group-hover:bg-brand-teal group-hover:text-white transition-all shrink-0">
+                                 {f.icon}
+                              </div>
                               <div>
-                                 <p className="text-brand-dark font-black tracking-tight text-lg italic">{f.title}</p>
-                                 <p className="text-slate-400 text-[11px] font-black uppercase tracking-widest opacity-60 mt-1">{f.desc}</p>
+                                 <p className="font-black text-brand-dark text-sm">{f.title}</p>
+                                 <p className="text-slate-400 text-[11px] font-semibold">{f.desc}</p>
                               </div>
                            </div>
                         ))}
                      </div>
                   </div>
 
-                  {/* Tabs Section */}
-                  <div className="pt-8">
-                     <div className="flex gap-8 md:gap-12 border-b border-slate-100 mb-12 overflow-x-auto scrollbar-hide py-2">
-                        {['itinerario', 'incluye', 'recomendaciones'].map(tab => (
+                  {/* Tabs */}
+                  <div>
+                     <div className="flex gap-1 bg-white p-1 rounded-2xl border border-amber-100 shadow-sm mb-8 overflow-x-auto">
+                        {['itinerario', 'incluye', 'agencias'].map(tab => (
                            <button
                               key={tab}
                               onClick={() => setActiveTab(tab)}
-                              className={`pb-6 text-[11px] md:text-sm font-black uppercase tracking-[0.3em] transition-all relative shrink-0 ${activeTab === tab ? 'text-brand-dark' : 'text-slate-300 hover:text-slate-500'}`}
+                              className={`flex-1 py-3 px-4 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeTab === tab
+                                 ? 'bg-brand-teal text-white shadow-md shadow-teal-500/20'
+                                 : 'text-slate-400 hover:text-brand-dark'}`}
                            >
-                              {tab}
-                              {activeTab === tab && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 w-full h-1.5 bg-brand-teal rounded-full"></motion.div>}
+                              {tab === 'agencias' ? '🏢 Agencias' : tab === 'itinerario' ? '🗺️ Itinerario' : '✅ Incluye'}
                            </button>
                         ))}
                      </div>
@@ -311,27 +221,33 @@ const TourDetailsPage = () => {
                      <AnimatePresence mode="wait">
                         <motion.div
                            key={activeTab}
-                           initial={{ opacity: 0, y: 20 }}
+                           initial={{ opacity: 0, y: 12 }}
                            animate={{ opacity: 1, y: 0 }}
-                           exit={{ opacity: 0, y: -20 }}
-                           className="min-h-75"
+                           exit={{ opacity: 0, y: -12 }}
+                           transition={{ duration: 0.25 }}
                         >
+                           {/* ITINERARIO */}
                            {activeTab === 'itinerario' && (
-                              <div className="space-y-8 md:space-y-12 px-2">
-                                 {[1, 2, 3].map(day => (
-                                    <div key={day} className="flex gap-8 md:gap-12 group">
+                              <div className="space-y-6">
+                                 {[
+                                    { day: 1, emoji: '✈️', title: 'Bienvenida & Relax', desc: 'Llegada al destino, traslado al hospedaje y primer contacto con el entorno natural. Noche de bienvenida con cena de autor frente al paisaje.' },
+                                    { day: 2, emoji: '🧭', title: 'Exploración Profunda', desc: 'Jornada completa explorando los rincones más espectaculares del destino con nuestros guías especializados. Picnic en plena naturaleza.' },
+                                    { day: 3, emoji: '🌅', title: 'Retorno Inolvidable', desc: 'Tiempo libre para compras de artesanía local. Cena de despedida y traslado al aeropuerto con los mejores recuerdos.' },
+                                 ].map(item => (
+                                    <div key={item.day} className="flex gap-5 group">
                                        <div className="flex flex-col items-center shrink-0">
-                                          <div className="w-14 h-14 md:w-20 md:h-20 rounded-4xl bg-brand-dark text-white flex items-center justify-center font-black italic shadow-2xl shadow-brand-dark/20 group-hover:bg-brand-teal transition-all duration-700 text-xl">
-                                             0{day}
+                                          <div className="w-12 h-12 rounded-2xl bg-brand-dark text-white flex flex-col items-center justify-center group-hover:bg-amber-500 transition-colors duration-500 shadow-lg">
+                                             <span className="text-xs font-black">{String(item.day).padStart(2, '0')}</span>
                                           </div>
-                                          <div className="w-px h-full bg-slate-100 group-last:bg-transparent mt-6"></div>
+                                          {item.day < 3 && <div className="w-px flex-1 bg-slate-100 mt-3 mb-1"></div>}
                                        </div>
-                                       <div className="pb-10 md:pb-16">
-                                          <h4 className="text-2xl md:text-3xl font-black text-brand-dark mb-4 leading-tight italic tracking-tighter">Día {day}: {day === 1 ? 'Bienvenida & Relax' : day === 2 ? 'Exploración Profunda' : 'Retorno Inolvidable'}</h4>
-                                          <div className="bg-slate-50/50 p-8 rounded-[2.5rem] border border-white shadow-sm hover:shadow-md transition-shadow">
-                                             <p className="text-slate-500 font-semibold italic text-lg md:text-xl leading-relaxed">
-                                                Comenzamos la jornada con un desayuno buffet de autor frente al mar. {day === 2 ? 'Nadie conoce este rincón como nosotros; caminaremos por senderos vírgenes hasta la cascada oculta donde disfrutaremos un picnic privado.' : 'Tiempo libre para compras de artesanía local antes de nuestra cena de despedida.'}
-                                             </p>
+                                       <div className="pb-8">
+                                          <div className="flex items-center gap-2 mb-2">
+                                             <span className="text-xl">{item.emoji}</span>
+                                             <h4 className="text-lg font-black text-brand-dark">{item.title}</h4>
+                                          </div>
+                                          <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                                             <p className="text-slate-500 font-medium leading-relaxed text-sm">{item.desc}</p>
                                           </div>
                                        </div>
                                     </div>
@@ -339,24 +255,54 @@ const TourDetailsPage = () => {
                               </div>
                            )}
 
+                           {/* INCLUYE */}
                            {activeTab === 'incluye' && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                  {[
-                                    { t: 'Traslados VIP', d: 'Recogida exclusiva en el aeropuerto' },
-                                    { t: 'Eco-Hospedaje', d: 'Suite con vista panorámica' },
-                                    { t: 'Cena de Autor', d: 'Experiencia gastronómica incluida' },
-                                    { t: 'Equipamiento', d: 'Todo el kit de seguridad y snorkeling' },
-                                    { t: 'Guía Especialista', d: 'Experto en biodiversidad local' },
-                                    { t: 'Seguro Contra Todo', d: 'Paz mental en cada paso' }
+                                    { emoji: '🚐', t: 'Traslados VIP', d: 'Recogida exclusiva en aeropuerto' },
+                                    { emoji: '🏨', t: 'Eco-Hospedaje', d: 'Suite con vista panorámica' },
+                                    { emoji: '🍽️', t: 'Cena de Autor', d: 'Experiencia gastronómica incluida' },
+                                    { emoji: '🤿', t: 'Equipamiento', d: 'Kit de seguridad y snorkeling' },
+                                    { emoji: '🧑‍🏫', t: 'Guía Especialista', d: 'Experto en biodiversidad local' },
+                                    { emoji: '🛡️', t: 'Seguro de Viaje', d: 'Paz mental en cada paso' },
                                  ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-6 bg-slate-50/80 p-6 rounded-4xl border border-white group hover:bg-white hover:shadow-xl transition-all">
-                                       <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-brand-teal group-hover:bg-brand-teal group-hover:text-white transition-all shadow-sm">
-                                          <ChevronRight className="w-6 h-6" />
-                                       </div>
+                                    <div key={i} className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-slate-100 hover:border-brand-teal/30 hover:shadow-md transition-all group">
+                                       <span className="text-2xl">{item.emoji}</span>
                                        <div>
-                                          <p className="font-black text-brand-dark text-base uppercase tracking-tight">{item.t}</p>
-                                          <p className="text-[11px] text-slate-400 font-bold italic tracking-wide">{item.d}</p>
+                                          <p className="font-black text-brand-dark text-sm">{item.t}</p>
+                                          <p className="text-[11px] text-slate-400 font-semibold">{item.d}</p>
                                        </div>
+                                    </div>
+                                 ))}
+                              </div>
+                           )}
+
+                           {/* AGENCIAS */}
+                           {activeTab === 'agencias' && (
+                              <div className="space-y-4">
+                                 <p className="text-sm text-slate-500 italic mb-6">Contacta directamente con alguna de estas agencias para organizar tu viaje a <strong>{tour.title}</strong>.</p>
+                                 {AGENCIES.map((agency, i) => (
+                                    <div key={i} className="flex items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-100 hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                       <div className="flex items-center gap-4">
+                                          <div className="w-10 h-10 rounded-xl bg-brand-teal/10 flex items-center justify-center text-brand-teal font-black text-sm">
+                                             {agency.name[0]}
+                                          </div>
+                                          <div>
+                                             <p className="font-black text-brand-dark text-sm">{agency.name}</p>
+                                             <p className="text-[11px] text-brand-teal font-black uppercase tracking-wide">{agency.tipo}</p>
+                                             <p className="text-[11px] text-slate-400 font-semibold flex items-center gap-1 mt-0.5">
+                                                <Phone className="w-2.5 h-2.5" /> {agency.tel}
+                                             </p>
+                                          </div>
+                                       </div>
+                                       <a
+                                          href={`https://wa.me/${agency.tel.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hola ${agency.name}, me interesa un viaje a ${tour.title}.`)}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="shrink-0 bg-[#25D366] text-white px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-green-500 transition-all flex items-center gap-1.5"
+                                       >
+                                          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                                       </a>
                                     </div>
                                  ))}
                               </div>
@@ -366,97 +312,221 @@ const TourDetailsPage = () => {
                   </div>
                </div>
 
-               {/* Booking Card - Sticky on Desktop */}
-               <div className="lg:col-span-4 hidden lg:block">
-                  <div className="lg:sticky lg:top-28">
-                     <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-lg text-slate-800">
-                        <div className="mb-6">
-                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-teal">Tarifa All-Inclusive</span>
-                           <div className="mt-3 flex items-baseline gap-1">
-                              <span className="text-4xl font-black">${tour.price}</span>
-                              <span className="text-xs uppercase text-slate-500">USD / Persona</span>
-                           </div>
-                           <p className="mt-3 text-xs text-slate-500">Precio por persona. Incluye impuestos y tasas. Reserva con soporte 24/7.</p>
-                        </div>
+               {/* Sidebar */}
+               <div className="lg:col-span-4">
+                  <div className="lg:sticky lg:top-28 space-y-5">
 
-                        <div className="space-y-4 pt-8 border-t border-white/10 mb-10">
-                           <div className="flex items-center gap-3 bg-white/10 rounded-2xl border border-white/10 p-3">
-                              <Calendar className="w-4 h-4 text-brand-teal" />
-                              <div>
-                                 <div className="text-[9px] uppercase tracking-[0.2em] text-white/60 font-black">Salida próxima</div>
-                                 <div className="text-sm font-black text-white">24 Mayo 2024</div>
+                     {/* Dato curioso */}
+                     <div className="bg-gradient-to-br from-brand-dark to-[#0d2b26] p-7 rounded-2xl text-white overflow-hidden relative">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/10 rounded-full blur-2xl"></div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-teal mb-3 block">💡 Dato curioso</span>
+                        <h3 className="text-xl font-black italic tracking-tight leading-snug mb-3">{tour.title}</h3>
+                        <p className="text-white/55 font-medium text-sm leading-relaxed mb-5">{tour.description}</p>
+                        <div className="flex items-center gap-2 pt-4 border-t border-white/10">
+                           <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                           <span className="text-amber-400 font-black text-sm">{tour.rating} / 5.0</span>
+                           <span className="text-white/30 text-xs">· 120 reseñas</span>
+                        </div>
+                     </div>
+
+                     {/* Compartir */}
+                     <button
+                        onClick={handleShare}
+                        className="w-full flex items-center justify-center gap-2 bg-white border border-slate-200 text-brand-dark py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:border-brand-teal hover:text-brand-teal transition-all shadow-sm"
+                     >
+                        <Share2 className="w-4 h-4" /> Compartir destino
+                     </button>
+
+                     {/* Favorito */}
+                     <button
+                        onClick={() => toggleFavorite(tour)}
+                        className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all border ${isFavorite(tour.id) ? 'bg-rose-500 text-white border-rose-400' : 'bg-white border-slate-200 text-slate-500 hover:border-rose-300 hover:text-rose-500'}`}
+                     >
+                        <Heart className="w-4 h-4" fill={isFavorite(tour.id) ? 'currentColor' : 'none'} />
+                        {isFavorite(tour.id) ? 'Guardado en favoritos' : 'Guardar en favoritos'}
+                     </button>
+
+                     {/* Tip de viaje */}
+                     <div className="bg-amber-50 border border-amber-100 p-5 rounded-2xl">
+                        <div className="flex items-center gap-2 mb-2">
+                           <Sun className="w-4 h-4 text-amber-500" />
+                           <span className="text-[10px] font-black uppercase tracking-widest text-amber-600">Consejo de viaje</span>
+                        </div>
+                        <p className="text-sm text-amber-800/70 font-medium leading-relaxed">
+                           Contacta a las agencias con anticipación para asegurar disponibilidad, especialmente en temporada alta.
+                        </p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* ── RESEÑAS DE VIAJEROS ── */}
+         <section className="py-16 px-5 md:px-8 bg-[#fdfaf6] border-t border-amber-100">
+            <div className="max-w-7xl mx-auto">
+               {/* Header */}
+               <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                  <div>
+                     <div className="flex items-center gap-3 mb-2">
+                        <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                        <h2 className="text-2xl md:text-3xl font-black text-brand-dark tracking-tight">
+                           Reseñas de viajeros
+                        </h2>
+                     </div>
+                     <p className="text-slate-500 text-sm font-medium">
+                        Experiencias reales de clientes que viajaron a <strong>{tour.title}</strong> con nuestras agencias
+                     </p>
+                  </div>
+                  {/* Resumen de rating */}
+                  <div className="flex items-center gap-4 bg-white border border-amber-100 rounded-2xl px-6 py-4 shadow-sm shrink-0">
+                     <div className="text-center">
+                        <div className="text-4xl font-black text-brand-dark">{tour.rating}</div>
+                        <div className="flex gap-0.5 justify-center my-1">
+                           {[...Array(5)].map((_, i) => (
+                              <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(tour.rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200 fill-slate-200'}`} />
+                           ))}
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-black uppercase tracking-wider">120 reseñas</div>
+                     </div>
+                     <div className="w-px h-12 bg-amber-100"></div>
+                     <div className="space-y-1">
+                        {[5, 4, 3].map(n => (
+                           <div key={n} className="flex items-center gap-2">
+                              <span className="text-[10px] text-slate-400 font-black w-2">{n}</span>
+                              <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                 <div
+                                    className="h-full bg-amber-400 rounded-full"
+                                    style={{ width: n === 5 ? '70%' : n === 4 ? '20%' : '10%' }}
+                                 ></div>
                               </div>
                            </div>
-                           <div className="flex items-center gap-3 bg-white/10 rounded-2xl border border-white/10 p-3">
-                              <MapIcon className="w-4 h-4 text-brand-teal" />
-                              <div>
-                                 <div className="text-[9px] uppercase tracking-[0.2em] text-white/60 font-black">Punto de encuentro</div>
-                                 <div className="text-sm font-black text-white">Simón Bolívar</div>
-                              </div>
-                           </div>
-                        </div>
-
-                        <div className="space-y-3">
-                           <button
-                              onClick={handleReserve}
-                              className="w-full bg-brand-teal text-white py-3 rounded-xl font-black uppercase tracking-[0.2em] text-xs shadow-lg hover:bg-teal-600 transition-all"
-                              aria-label="Reservar tour"
-                           >
-                              <ShoppingCart className="w-4 h-4 inline mr-1" /> Reservar Ahora
-                           </button>
-                           <button onClick={handleShare} className="w-full border border-slate-200 text-slate-700 py-3 rounded-xl font-black uppercase tracking-[0.2em] text-xs hover:bg-slate-50 transition-all">
-                              <Share2 className="w-4 h-4 inline mr-1" /> Compartir
-                           </button>
-                        </div>
+                        ))}
                      </div>
                   </div>
                </div>
 
+               {/* Grid de reseñas */}
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[
+                     {
+                        nombre: 'María Fernanda R.',
+                        avatar: 'https://i.pravatar.cc/80?u=mfr',
+                        agencia: 'Paradise Travel',
+                        estrellas: 5,
+                        fecha: 'Mayo 2026',
+                        comentario: `Viaje a ${tour.title} fue una experiencia que no olvidaré. Paradise Travel organizó todo a la perfección: desde el traslado hasta las actividades diarias. Me sentí segura y acompañada en todo momento. ¡Totalmente recomendado!`
+                     },
+                     {
+                        nombre: 'Carlos J. Morales',
+                        avatar: 'https://i.pravatar.cc/80?u=cjm',
+                        agencia: 'Trotamundos Tours',
+                        estrellas: 4,
+                        fecha: 'Abril 2026',
+                        comentario: `Reservé con Trotamundos Tours y la experiencia fue muy buena. Los guías conocen muy bien ${tour.title}. Hubo un pequeño retraso al inicio pero luego todo fluyó perfecto. Volvería sin dudarlo.`
+                     },
+                     {
+                        nombre: 'Luisa Torrealba',
+                        avatar: 'https://i.pravatar.cc/80?u=lt99',
+                        agencia: 'Venezuela Travels',
+                        estrellas: 5,
+                        fecha: 'Marzo 2026',
+                        comentario: `Venezuela Travels superó mis expectativas. La logística para llegar a ${tour.title} es compleja, pero ellos lo manejaron todo sin complicaciones. Las fotos no le hacen justicia a lo que vivimos en persona.`
+                     },
+                     {
+                        nombre: 'Andrés Salcedo',
+                        avatar: 'https://i.pravatar.cc/80?u=as88',
+                        agencia: 'Aventuras VZ',
+                        estrellas: 5,
+                        fecha: 'Junio 2026',
+                        comentario: `Fui con un grupo de amigos a ${tour.title} con Aventuras VZ. El guía fue increíble, muy conocedor y simpático. Las actividades estuvieron bien organizadas y el hospedaje superó lo esperado.`
+                     },
+                     {
+                        nombre: 'Gabriela Méndez',
+                        avatar: 'https://i.pravatar.cc/80?u=gm55',
+                        agencia: 'Caribe Expediciones',
+                        estrellas: 4,
+                        fecha: 'Febrero 2026',
+                        comentario: `Caribe Expediciones nos llevó a conocer ${tour.title} de una forma muy especial. El recorrido en lancha fue lo mejor. Solo un pequeño inconveniente con el clima, pero eso escapa de su control.`
+                     },
+                     {
+                        nombre: 'Roberto Palacios',
+                        avatar: 'https://i.pravatar.cc/80?u=rp77',
+                        agencia: 'Paradise Travel',
+                        estrellas: 5,
+                        fecha: 'Enero 2026',
+                        comentario: `Segunda vez con Paradise Travel y de nuevo una experiencia 10/10. ${tour.title} es un destino mágico que hay que vivir al menos una vez. La atención, la comida y los paisajes: todo fue perfecto.`
+                     },
+                  ].map((review, i) => (
+                     <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.07 }}
+                        className="bg-white rounded-2xl border border-amber-100 p-6 shadow-sm hover:shadow-md hover:border-brand-teal/20 transition-all flex flex-col gap-4"
+                     >
+                        {/* Estrellas + fecha */}
+                        <div className="flex items-center justify-between">
+                           <div className="flex gap-0.5">
+                              {[...Array(5)].map((_, j) => (
+                                 <Star key={j} className={`w-4 h-4 ${j < review.estrellas ? 'fill-amber-400 text-amber-400' : 'fill-slate-100 text-slate-100'}`} />
+                              ))}
+                           </div>
+                           <span className="text-[10px] text-slate-400 font-semibold">{review.fecha}</span>
+                        </div>
+
+                        {/* Comentario */}
+                        <p className="text-slate-600 text-sm font-medium leading-relaxed flex-1">
+                           "{review.comentario}"
+                        </p>
+
+                        {/* Footer: avatar + nombre + agencia */}
+                        <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
+                           <img
+                              src={review.avatar}
+                              alt={review.nombre}
+                              className="w-10 h-10 rounded-full object-cover border-2 border-amber-100"
+                           />
+                           <div>
+                              <p className="font-black text-brand-dark text-sm leading-tight">{review.nombre}</p>
+                              <p className="text-[10px] text-brand-teal font-black uppercase tracking-wide">
+                                 vía {review.agencia}
+                              </p>
+                           </div>
+                        </div>
+                     </motion.div>
+                  ))}
+               </div>
             </div>
          </section>
 
-         {/* Floating Mobile CTA Buttons */}
-         <div className="lg:hidden fixed bottom-20 left-1/2 -translate-x-1/2 w-[94%] max-w-107.5 z-50">
-            <div className="bg-white border border-slate-200 p-2 rounded-2xl shadow-xl flex items-center justify-between gap-2">
-               <div className="flex flex-col">
-                  <span className="text-[10px] uppercase font-black tracking-wider text-slate-400">Desde</span>
-                  <span className="text-sm font-black text-brand-dark">${tour.price} USD / por persona</span>
+         {/* ── TAMBIÉN TE RECOMENDAMOS ── */}
+         <section className="py-16 border-t border-amber-100 bg-white">
+            <div className="max-w-7xl mx-auto px-5 md:px-8">
+               <div className="flex items-center gap-4 mb-10">
+                  <Compass className="w-5 h-5 text-amber-500" />
+                  <h2 className="text-2xl font-black text-brand-dark tracking-tight">También podría interesarte</h2>
+                  <div className="flex-1 h-px bg-amber-100"></div>
                </div>
-               <button
-                  onClick={handleReserve}
-                  className="bg-brand-teal text-white h-11 rounded-xl font-black uppercase tracking-wide text-xs px-4 shadow-md hover:bg-teal-600 transition-all"
-                  aria-label="Reservar tour"
-               >
-                  Reservar Ahora
-               </button>
-            </div>
-         </div>
-
-         {/* Floating WhatsApp Quick Action */}
-         <button
-            onClick={openWhatsAppQuick}
-            className="fixed bottom-28 right-4 z-50 bg-[#25D366] text-white p-2.5 rounded-full shadow-lg border border-white active:scale-95 transition-all"
-            aria-label="Chat WhatsApp"
-         >
-            <MessageCircle className="w-4 h-4" />
-         </button>
-
-         <section className="py-24 bg-slate-50/50 overflow-hidden border-t border-slate-100 mb-10">
-            <div className="max-w-7xl mx-auto px-6">
-               <h2 className="text-3xl font-black text-brand-dark mb-16 italic tracking-tighter text-center">Te recomendamos también</h2>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   {TOURS.filter(t => t.id !== tour.id).slice(0, 4).map(t => (
                      <Link to={`/paquetes/${t.id}`} key={t.id} className="group block">
-                        <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition-all">
+                        <div className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-lg hover:border-brand-teal/20 transition-all">
                            <OptimizedImage
                               src={t.image}
                               alt={t.title}
-                              className="w-full h-44 object-cover"
-                              containerClassName="w-full h-44"
+                              className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                              containerClassName="w-full h-44 overflow-hidden"
                            />
-                           <div className="p-3">
-                              <h3 className="text-sm font-black text-brand-dark line-clamp-2">{t.title}</h3>
-                              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-500 mt-1">Desde ${t.price} USD</p>
+                           <div className="p-4">
+                              <div className="flex items-center gap-1 mb-1">
+                                 <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                                 <span className="text-[10px] font-black text-slate-500">{t.rating}</span>
+                              </div>
+                              <h3 className="text-sm font-black text-brand-dark group-hover:text-brand-teal transition-colors line-clamp-2">{t.title}</h3>
+                              <p className="text-[10px] text-slate-400 font-semibold mt-1 flex items-center gap-1">
+                                 <MapPin className="w-2.5 h-2.5" /> {t.location}
+                              </p>
                            </div>
                         </div>
                      </Link>
@@ -465,10 +535,10 @@ const TourDetailsPage = () => {
             </div>
          </section>
 
-         {/* Share Modal */}
+         {/* ── SHARE MODAL ── */}
          <AnimatePresence>
             {showShareModal && (
-               <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
+               <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
                   <motion.div
                      initial={{ opacity: 0 }}
                      animate={{ opacity: 1 }}
@@ -477,36 +547,43 @@ const TourDetailsPage = () => {
                      className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                   />
                   <motion.div
-                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                     initial={{ opacity: 0, scale: 0.92, y: 20 }}
                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                     className="relative w-full max-w-sm bg-white/10 backdrop-blur-3xl border border-white/20 p-8 rounded-[3rem] shadow-2xl"
+                     exit={{ opacity: 0, scale: 0.92, y: 20 }}
+                     className="relative w-full max-w-sm bg-white p-8 rounded-2xl shadow-2xl"
                   >
-                     <h3 className="text-xl font-black text-white italic mb-6 tracking-tighter text-center">Compartir</h3>
-                     <div className="grid grid-cols-2 gap-4">
-                        {shareLinks.map((link) => (
-                           <button
-                              key={link.name}
-                              onClick={link.action}
-                              className="flex flex-col items-center gap-3 bg-white/10 border border-white/20 p-6 rounded-3xl hover:bg-white/20 transition-all text-white font-bold group"
-                           >
-                              <div className="bg-white p-3 rounded-2xl text-brand-dark group-hover:scale-110 transition-transform">
-                                 {link.icon}
-                              </div>
-                              <span className="text-[10px] uppercase tracking-widest">{link.name}</span>
-                           </button>
-                        ))}
+                     <h3 className="text-xl font-black text-brand-dark mb-6 tracking-tight">Compartir destino</h3>
+                     <div className="space-y-3">
+                        <button
+                           onClick={handleCopy}
+                           className="w-full flex items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl hover:border-brand-teal transition-all"
+                        >
+                           <div className="w-9 h-9 bg-brand-dark rounded-lg flex items-center justify-center text-white text-sm">🔗</div>
+                           <span className="font-black text-sm text-brand-dark">{copied ? '¡Enlace copiado!' : 'Copiar enlace'}</span>
+                        </button>
+                        <a
+                           href={`https://wa.me/?text=${encodeURIComponent(`Mira este destino: ${tour?.title} - ${window.location.href}`)}`}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="w-full flex items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-xl hover:border-green-400 transition-all"
+                        >
+                           <div className="w-9 h-9 bg-[#25D366] rounded-lg flex items-center justify-center">
+                              <MessageCircle className="w-5 h-5 text-white" />
+                           </div>
+                           <span className="font-black text-sm text-brand-dark">WhatsApp</span>
+                        </a>
                      </div>
                      <button
                         onClick={() => setShowShareModal(false)}
-                        className="w-full mt-8 py-2 text-white/50 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors"
+                        className="w-full mt-6 py-3 text-slate-400 text-xs font-black uppercase tracking-widest hover:text-brand-dark transition-colors"
                      >
-                        Cerrar Ventana
+                        Cerrar
                      </button>
                   </motion.div>
                </div>
             )}
          </AnimatePresence>
+
       </div>
    );
 };

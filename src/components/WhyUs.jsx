@@ -1,27 +1,27 @@
 import React from 'react';
-import { ShieldCheck, Leaf, Users, Headphones, Plane, Search } from 'lucide-react';
+import { ShieldCheck, Leaf, Users, Headphones, Plane } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const reasons = [
   {
     icon: <ShieldCheck className="w-10 h-10 text-brand-teal" />,
     title: 'Seguridad Primero',
-    desc: 'Protocolos de seguridad y guías certificados en todas las rutas.'
+    desc: 'Información verificada de operadoras y servicios turísticos para ofrecer experiencias confiables en Venezuela.'
   },
   {
     icon: <Leaf className="w-10 h-10 text-brand-teal" />,
     title: 'Turismo Consciente',
-    desc: 'Mínimo impacto ambiental y apoyo a comunidades locales.'
+    desc: 'Promovemos un turismo responsable que respete la naturaleza, la cultura y las comunidades locales.'
   },
   {
     icon: <Users className="w-10 h-10 text-brand-teal" />,
     title: 'Expertos Locales',
-    desc: 'Guías que conocen cada rincón y secreto de la tierra.'
+    desc: 'Conectamos con guías y operadoras que conocen cada destino para experiencias auténticas.'
   },
   {
     icon: <Headphones className="w-10 h-10 text-brand-teal" />,
-    title: 'Soporte 24/7',
-    desc: 'Acompañamiento personalizado antes y durante su viaje.'
+    title: 'Soporte Informativo',
+    desc: 'Acceso a información actualizada de destinos, actividades y contactos turísticos en un solo lugar.'
   }
 ];
 
@@ -36,7 +36,7 @@ const WhyUs = () => {
        <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-24 max-w-3xl mx-auto">
              <h2 className="text-4xl md:text-[56px] font-black text-brand-dark leading-tight mb-8 tracking-tight">
-               ¿Por qué <span className="text-brand-teal italic">elegirnos?</span>
+               ¿Por qué elegir alguna de las <span className="text-brand-teal italic">agencias?</span>
              </h2>
              <div className="w-24 h-1.5 bg-brand-teal rounded-full mx-auto"></div>
           </div>

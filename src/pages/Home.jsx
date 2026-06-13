@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import VenezuelaMapSection from '../components/VenezuelaMapSection';
 import Destinations from '../components/Destinations';
 import WhyUs from '../components/WhyUs';
 import Testimonials from '../components/Testimonials';
@@ -9,6 +10,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <VenezuelaMapSection />
       <Destinations />
       <WhyUs />
       <div className="w-full h-24 bg-linear-to-b from-slate-50 to-brand-dark pointer-events-none"></div>
