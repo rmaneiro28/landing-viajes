@@ -8,8 +8,30 @@ import {
    ArrowLeft, Star, MapPin, ShieldCheck, CheckCircle2,
    MessageCircle, Users, ChevronRight,
    Heart, Share2, Sun, Compass, Wind,
-   Coffee, Plane, Hotel, Phone
+   Coffee, Plane, Hotel, Phone, Cloud, CloudRain
 } from 'lucide-react';
+
+const getWeatherDescription = (code) => {
+   if (code === undefined || code === null) return 'Tropical';
+   if (code === 0) return 'Despejado';
+   if (code <= 3) return 'Parcial. Nublado';
+   if (code <= 48) return 'Niebla';
+   if (code <= 55) return 'Llovizna';
+   if (code <= 65) return 'Lluvia';
+   if (code <= 75) return 'Nieve';
+   if (code <= 82) return 'Chubascos';
+   if (code >= 95) return 'Tormenta';
+   return 'Variado';
+};
+
+const getWeatherIcon = (code) => {
+   if (code === undefined || code === null) return <Sun size={20} />;
+   if (code === 0) return <Sun size={20} />;
+   if (code <= 3) return <Cloud size={20} />;
+   if (code <= 48) return <Cloud size={20} />;
+   if (code <= 82) return <CloudRain size={20} />;
+   return <CloudRain size={20} />;
+};
 
 // Agencias disponibles por destino
 const AGENCIES = [
@@ -28,6 +50,7 @@ const TourDetailsPage = () => {
    const [activeTab, setActiveTab] = useState('itinerario');
    const [showShareModal, setShowShareModal] = useState(false);
    const [copied, setCopied] = useState(false);
+   const [weather, setWeather] = useState(null);
 
    const features = useMemo(() => [
       { icon: <ShieldCheck className="w-5 h-5" />, title: 'Seguro de Viaje', desc: 'Cobertura completa' },
@@ -39,8 +62,12 @@ const TourDetailsPage = () => {
       { icon: <Hotel size={20} />, label: 'Hospedaje', value: 'Eco-Luxury' },
       { icon: <Plane size={20} />, label: 'Transporte', value: 'VIP Transfer' },
       { icon: <Coffee size={20} />, label: 'Desayuno', value: 'Incluido' },
-      { icon: <Wind size={20} />, label: 'Clima', value: 'Tropical' },
-   ], []);
+      { 
+         icon: weather ? getWeatherIcon(weather.weathercode) : <Wind size={20} />, 
+         label: weather ? `Clima (${weather.temperature}°C)` : 'Clima', 
+         value: weather ? getWeatherDescription(weather.weathercode) : 'Tropical' 
+      },
+   ], [weather]);
 
    const handleShare = async () => {
       if (navigator.share) {
@@ -66,6 +93,18 @@ const TourDetailsPage = () => {
          setTour(foundTour);
          window.scrollTo(0, 0);
          setTourNotFound(false);
+         setWeather(null);
+         
+         if (foundTour.coords) {
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${foundTour.coords[0]}&longitude=${foundTour.coords[1]}&current_weather=true`)
+               .then(res => res.json())
+               .then(data => {
+                  if (data.current_weather) {
+                     setWeather(data.current_weather);
+                  }
+               })
+               .catch(err => console.error("Error fetching weather:", err));
+         }
       } else {
          setTourNotFound(true);
       }
@@ -315,6 +354,20 @@ const TourDetailsPage = () => {
                {/* Sidebar */}
                <div className="lg:col-span-4">
                   <div className="lg:sticky lg:top-28 space-y-5">
+
+                     {/* Clima Actual */}
+                     {weather && (
+                        <div className="bg-gradient-to-br from-[#0e5c5a] to-[#0a3d3c] p-7 rounded-2xl text-white shadow-sm flex items-center justify-between border border-brand-teal/20">
+                           <div>
+                              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-teal mb-1 block">Clima Actual</span>
+                              <div className="text-4xl font-black tracking-tighter">{weather.temperature}°C</div>
+                              <div className="text-sm font-medium mt-1 text-white/70">{getWeatherDescription(weather.weathercode)}</div>
+                           </div>
+                           <div className="w-14 h-14 bg-brand-teal/10 rounded-full flex items-center justify-center text-brand-teal">
+                              {getWeatherIcon(weather.weathercode)}
+                           </div>
+                        </div>
+                     )}
 
                      {/* Dato curioso */}
                      <div className="bg-gradient-to-br from-brand-dark to-[#0d2b26] p-7 rounded-2xl text-white overflow-hidden relative">

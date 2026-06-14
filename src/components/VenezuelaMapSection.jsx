@@ -33,7 +33,6 @@ const VenezuelaMapSection = () => {
   const { pathGenerator, projectedPins } = useMemo(() => {
     if (!geoData) return { pathGenerator: null, projectedPins: [] };
     
-    // fitExtent baja el mapa dejando padding arriba para que no se corten las burbujas
     const projection = geoMercator().fitExtent([[40, 110], [860, 600]], geoData);
     const pathGen = geoPath().projection(projection);
     
@@ -45,14 +44,12 @@ const VenezuelaMapSection = () => {
     return { pathGenerator: pathGen, projectedPins: pins };
   }, [geoData]);
 
-  // Floating Minifotos logic sin repetir hasta que pasen todas
   useEffect(() => {
     if (!projectedPins || projectedPins.length === 0) return;
     
     const interval = setInterval(() => {
-      if (activePin) return; // Pausar si el usuario está interactuando
+      if (activePin) return;
       
-      // Si ya mostramos todas, recargamos la lista y la barajamos
       if (unshownPins.current.length === 0) {
         unshownPins.current = [...projectedPins].sort(() => Math.random() - 0.5);
       }
@@ -60,7 +57,6 @@ const VenezuelaMapSection = () => {
       const nextPin = unshownPins.current.pop();
       setFloatingPin(nextPin.id);
       
-      // Ocultar la foto después de 2.8 segundos (intervalo total de 3.5s)
       setTimeout(() => setFloatingPin(null), 2800);
     }, 3500);
     

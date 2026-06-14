@@ -13,7 +13,8 @@ export const TOURS = [
     category: 'Aventura',
     activities: ['Naturaleza', 'Aventura', 'Ecoturismo'],
     description: 'Nuestra expedición Canaima Premium incluye sobrevuelo al Salto Ángel, alojamiento frente a la laguna y tour guiado de 3 días / 2 noches. Reencuéntrate con la majestuosidad de la tierra más antigua del mundo.',
-    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026', '01 Jul 2026']
+    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026', '01 Jul 2026'],
+    coords: [5.9666, -62.5333]
   },
   {
     id: 'los-roques-paraiso',
@@ -29,7 +30,8 @@ export const TOURS = [
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Navegación'],
     description: 'Desconéctate en el archipiélago más exclusivo del Caribe venezolano. Incluye boletos aéreos, posada de lujo con pensión completa y paseos diarios a los cayos más remotos.',
-    availableDates: ['14 Jun 2026', '21 Jun 2026', '28 Jun 2026']
+    availableDates: ['14 Jun 2026', '21 Jun 2026', '28 Jun 2026'],
+    coords: [11.8500, -66.7500]
   },
   {
     id: 'cumbres-de-merida',
@@ -45,7 +47,8 @@ export const TOURS = [
     category: 'Aventura',
     activities: ['Cultura e Historia', 'Aventura', 'Naturaleza'],
     description: 'Explora los Andes venezolanos. Subida al teleférico Mukumbarí, tours por pueblos pintorescos y lagunas de altura. Un viaje lleno de tradición y paisajes alpinos.',
-    availableDates: ['01 Jul 2026', '08 Jul 2026', '15 Jul 2026']
+    availableDates: ['01 Jul 2026', '08 Jul 2026', '15 Jul 2026'],
+    coords: [8.5333, -71.0500]
   },
   {
     id: 'misterios-gran-sabana',
@@ -61,7 +64,8 @@ export const TOURS = [
     category: 'Aventura',
     activities: ['Naturaleza', 'Aventura'],
     description: 'Un viaje al corazón de la tierra. Expediciones en 4x4 por los tepuyes y cascadas infinitas. Siente la energía ancestral de los paisajes más antiguos del planeta.',
-    availableDates: ['18 Jul 2026', '25 Jul 2026', '01 Aug 2026']
+    availableDates: ['18 Jul 2026', '25 Jul 2026', '01 Aug 2026'],
+    coords: [5.1833, -60.7333]
   },
   {
     id: 'morrocoy-cayos-exclusive',
@@ -77,7 +81,8 @@ export const TOURS = [
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Navegación'],
     description: 'Navega por los manglares y disfruta de los cayos más hermosos de Falcón en una lancha privada. Posada boutique con atención de primera clase.',
-    availableDates: ['05 Jun 2026', '12 Jun 2026', '19 Jun 2026']
+    availableDates: ['05 Jun 2026', '12 Jun 2026', '19 Jun 2026'],
+    coords: [10.8333, -68.2500]
   },
   {
     id: 'coro-dunas-patrimonio',
@@ -93,7 +98,8 @@ export const TOURS = [
     category: 'Cultura e Historia',
     activities: ['Cultura e Historia', 'Gastronomía'],
     description: 'Patrimonio de la Humanidad y desierto costero. Historia colonial y atardeceres mágicos en las dunas de Coro.',
-    availableDates: ['02 Jun 2026', '09 Jun 2026', '16 Jun 2026']
+    availableDates: ['02 Jun 2026', '09 Jun 2026', '16 Jun 2026'],
+    coords: [11.4166, -69.6666]
   },
   {
     id: 'la-tortuga-expedition',
@@ -108,7 +114,8 @@ export const TOURS = [
     category: 'Playa y Relax',
     activities: ['Aventura', 'Navegación'],
     description: 'Siente la soledad paradisíaca de la isla La Tortuga. Camping de lujo frente a aguas cristalinas que parecen de cristal.',
-    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026']
+    availableDates: ['10 Jun 2026', '17 Jun 2026', '24 Jun 2026'],
+    coords: [10.9333, -65.3166]
   },
   {
     id: 'mochima-bahia-lujo',
@@ -123,7 +130,8 @@ export const TOURS = [
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Gastronomía'],
     description: 'Crucero por las islas del Parque Nacional Mochima. Disfruta de la mejor gastronomía marina y delfines en su hábitat natural.',
-    availableDates: ['22 Jun 2026', '29 Jun 2026', '06 Jul 2026']
+    availableDates: ['22 Jun 2026', '29 Jun 2026', '06 Jul 2026'],
+    coords: [10.3333, -64.5000]
   },
   {
     id: 'margarita-perla-caribe',
@@ -139,6 +147,7 @@ export const TOURS = [
     category: 'Playa y Relax',
     activities: ['Playa y Relax', 'Cultura e Historia', 'Gastronomía'],
     description: 'Disfruta de las mejores playas, castillos coloniales y vida nocturna en la Isla de Margarita. Paquete todo incluido en resort 5 estrellas.',
-    availableDates: ['15 Jun 2026', '22 Jun 2026', '29 Jun 2026']
+    availableDates: ['15 Jun 2026', '22 Jun 2026', '29 Jun 2026'],
+    coords: [10.9971, -63.9113]
   }
 ];
