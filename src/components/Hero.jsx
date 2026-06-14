@@ -1,13 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { TOURS } from '../data/tours';
 import OptimizedImage from './OptimizedImage';
+import TravelMatchModal from './TravelMatchModal';
 
 const Hero = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
 
   const suggestions = useMemo(() => {
     if (search.trim().length <= 1) return [];
@@ -102,8 +104,24 @@ const Hero = () => {
               </div>
             </div>
           </div>
+
+          {/* Travel Match Trigger */}
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => setIsMatchModalOpen(true)}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full text-white font-bold text-sm transition-all group"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              ¿No sabes a dónde ir? Descubre tu destino ideal
+            </button>
+          </div>
         </motion.div>
       </div>
+
+      <TravelMatchModal 
+        isOpen={isMatchModalOpen} 
+        onClose={() => setIsMatchModalOpen(false)} 
+      />
     </section>
   );
 };

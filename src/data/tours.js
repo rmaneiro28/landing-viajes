@@ -124,5 +124,21 @@ export const TOURS = [
     activities: ['Playa y Relax', 'Gastronomía'],
     description: 'Crucero por las islas del Parque Nacional Mochima. Disfruta de la mejor gastronomía marina y delfines en su hábitat natural.',
     availableDates: ['22 Jun 2026', '29 Jun 2026', '06 Jul 2026']
+  },
+  {
+    id: 'margarita-perla-caribe',
+    title: 'La Perla del Caribe',
+    location: 'Nueva Esparta, Venezuela',
+    region: 'Margarita',
+    image: '/los_roques.png', // Fallback
+    price: 380,
+    duration: '5 Días / 4 Noches',
+    durationDays: 5,
+    rating: 4.8,
+    tag: 'POPULAR',
+    category: 'Playa y Relax',
+    activities: ['Playa y Relax', 'Cultura e Historia', 'Gastronomía'],
+    description: 'Disfruta de las mejores playas, castillos coloniales y vida nocturna en la Isla de Margarita. Paquete todo incluido en resort 5 estrellas.',
+    availableDates: ['15 Jun 2026', '22 Jun 2026', '29 Jun 2026']
   }
 ];

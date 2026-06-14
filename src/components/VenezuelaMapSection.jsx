@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Star, MapPin } from 'lucide-react';
@@ -14,11 +14,14 @@ const PINS_DATA = [
   { id: 'coro-dunas-patrimonio',    coords: [-69.6666, 11.4166], color: '#f59e0b' },
   { id: 'la-tortuga-expedition',    coords: [-65.3166, 10.9333], color: '#06b6d4', offshore: true },
   { id: 'mochima-bahia-lujo',       coords: [-64.5000, 10.3333], color: '#06b6d4' },
+  { id: 'margarita-perla-caribe',   coords: [-63.9113, 10.9971], color: '#06b6d4', offshore: true },
 ];
 
 const VenezuelaMapSection = () => {
   const [activePin, setActivePin] = useState(null);
+  const [floatingPin, setFloatingPin] = useState(null);
   const [geoData, setGeoData] = useState(null);
+  const unshownPins = useRef([]);
 
   useEffect(() => {
     fetch('/venezuela.geojson')
@@ -27,13 +30,11 @@ const VenezuelaMapSection = () => {
       .catch(err => console.error("Error loading geojson", err));
   }, []);
 
-  const activeTour = activePin ? TOURS.find(t => t.id === activePin) : null;
-  const activePinData = activePin ? PINS_DATA.find(p => p.id === activePin) : null;
-
   const { pathGenerator, projectedPins } = useMemo(() => {
     if (!geoData) return { pathGenerator: null, projectedPins: [] };
     
-    const projection = geoMercator().fitSize([900, 640], geoData);
+    // fitExtent baja el mapa dejando padding arriba para que no se corten las burbujas
+    const projection = geoMercator().fitExtent([[40, 110], [860, 600]], geoData);
     const pathGen = geoPath().projection(projection);
     
     const pins = PINS_DATA.map(pin => {
@@ -43,6 +44,31 @@ const VenezuelaMapSection = () => {
 
     return { pathGenerator: pathGen, projectedPins: pins };
   }, [geoData]);
+
+  // Floating Minifotos logic sin repetir hasta que pasen todas
+  useEffect(() => {
+    if (!projectedPins || projectedPins.length === 0) return;
+    
+    const interval = setInterval(() => {
+      if (activePin) return; // Pausar si el usuario está interactuando
+      
+      // Si ya mostramos todas, recargamos la lista y la barajamos
+      if (unshownPins.current.length === 0) {
+        unshownPins.current = [...projectedPins].sort(() => Math.random() - 0.5);
+      }
+      
+      const nextPin = unshownPins.current.pop();
+      setFloatingPin(nextPin.id);
+      
+      // Ocultar la foto después de 2.8 segundos (intervalo total de 3.5s)
+      setTimeout(() => setFloatingPin(null), 2800);
+    }, 3500);
+    
+    return () => clearInterval(interval);
+  }, [projectedPins, activePin]);
+
+  const activeTour = activePin ? TOURS.find(t => t.id === activePin) : null;
+  const activePinData = activePin ? PINS_DATA.find(p => p.id === activePin) : null;
 
   return (
     <section className="py-24 bg-brand-dark relative overflow-hidden">
@@ -88,6 +114,9 @@ const VenezuelaMapSection = () => {
                     <feGaussianBlur stdDeviation="3" result="blur"/>
                     <feComposite in="SourceGraphic" in2="blur" operator="over"/>
                   </filter>
+                  <clipPath id="circle-clip" clipPathUnits="objectBoundingBox">
+                    <circle cx="0.5" cy="0.5" r="0.5" />
+                  </clipPath>
                 </defs>
 
                 <path
@@ -122,52 +151,86 @@ const VenezuelaMapSection = () => {
                   const isActive = activePin === pin.id;
 
                   return (
-                    <g key={pin.id} onClick={() => setActivePin(isActive ? null : pin.id)} style={{ cursor: 'pointer' }}>
-                      {pin.offshore && (
-                        <line
-                          x1={pin.x}
-                          y1={pin.y + 14}
-                          x2={pin.x}
-                          y2={pin.y + 35}
+                    <g key={pin.id}>
+                      {/* Interactive Pin */}
+                      <g onClick={() => setActivePin(isActive ? null : pin.id)} style={{ cursor: 'pointer' }}>
+                        {pin.offshore && (
+                          <line
+                            x1={pin.x}
+                            y1={pin.y + 14}
+                            x2={pin.x}
+                            y2={pin.y + 35}
+                            stroke={pin.color}
+                            strokeWidth="1.5"
+                            strokeDasharray="4 3"
+                            strokeOpacity="0.5"
+                          />
+                        )}
+
+                        <circle cx={pin.x} cy={pin.y} r={isActive ? 22 : 16} fill={pin.color} fillOpacity={isActive ? 0.15 : 0.08}>
+                          <animate attributeName="r" values={`${isActive ? 22 : 14};${isActive ? 30 : 20};${isActive ? 22 : 14}`} dur="2.5s" repeatCount="indefinite"/>
+                          <animate attributeName="fill-opacity" values="0.15;0.04;0.15" dur="2.5s" repeatCount="indefinite"/>
+                        </circle>
+
+                        <circle
+                          cx={pin.x}
+                          cy={pin.y}
+                          r={isActive ? 9 : 7}
+                          fill={isActive ? pin.color : '#0f2420'}
                           stroke={pin.color}
-                          strokeWidth="1.5"
-                          strokeDasharray="4 3"
-                          strokeOpacity="0.5"
+                          strokeWidth={isActive ? 2.5 : 1.5}
+                          filter="url(#pinGlow)"
+                          style={{ transition: 'all 0.2s ease' }}
                         />
-                      )}
 
-                      <circle cx={pin.x} cy={pin.y} r={isActive ? 22 : 16} fill={pin.color} fillOpacity={isActive ? 0.15 : 0.08}>
-                        <animate attributeName="r" values={`${isActive ? 22 : 14};${isActive ? 30 : 20};${isActive ? 22 : 14}`} dur="2.5s" repeatCount="indefinite"/>
-                        <animate attributeName="fill-opacity" values="0.15;0.04;0.15" dur="2.5s" repeatCount="indefinite"/>
-                      </circle>
+                        <circle cx={pin.x} cy={pin.y} r={isActive ? 4 : 3} fill={pin.color} />
 
-                      <circle
-                        cx={pin.x}
-                        cy={pin.y}
-                        r={isActive ? 9 : 7}
-                        fill={isActive ? pin.color : '#0f2420'}
-                        stroke={pin.color}
-                        strokeWidth={isActive ? 2.5 : 1.5}
-                        filter="url(#pinGlow)"
-                        style={{ transition: 'all 0.2s ease' }}
-                      />
+                        <text
+                          x={pin.x}
+                          y={pin.y - 14}
+                          textAnchor="middle"
+                          fill="white"
+                          fillOpacity={isActive ? 1 : 0.65}
+                          fontSize={isActive ? "13" : "11"}
+                          fontWeight="700"
+                          letterSpacing="0.5"
+                          style={{ transition: 'all 0.2s ease', pointerEvents: 'none' }}
+                          filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.8))"
+                        >
+                          {tour.region}
+                        </text>
+                      </g>
 
-                      <circle cx={pin.x} cy={pin.y} r={isActive ? 4 : 3} fill={pin.color} />
-
-                      <text
-                        x={pin.x}
-                        y={pin.y - 14}
-                        textAnchor="middle"
-                        fill="white"
-                        fillOpacity={isActive ? 1 : 0.65}
-                        fontSize={isActive ? "13" : "11"}
-                        fontWeight="700"
-                        letterSpacing="0.5"
-                        style={{ transition: 'all 0.2s ease', pointerEvents: 'none' }}
-                        filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.8))"
-                      >
-                        {tour.region}
-                      </text>
+                      {/* Random Floating Mini Photo */}
+                      <AnimatePresence>
+                        {floatingPin === pin.id && !activePin && (
+                          <motion.g
+                            initial={{ opacity: 0, y: 15, scale: 0.5 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.5 }}
+                            transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+                            className="pointer-events-none"
+                          >
+                            <circle cx={pin.x} cy={pin.y - 55} r="33" fill="#0f2420" stroke={pin.color} strokeWidth="3" filter="drop-shadow(0 10px 15px rgba(0,0,0,0.5))" />
+                            <image 
+                              href={tour.image} 
+                              x={pin.x - 30} 
+                              y={pin.y - 85} 
+                              width="60" 
+                              height="60" 
+                              clipPath="url(#circle-clip)" 
+                              preserveAspectRatio="xMidYMid slice"
+                            />
+                            {/* Line connecting the bubble to the pin */}
+                            <path 
+                              d={`M ${pin.x} ${pin.y - 22} L ${pin.x} ${pin.y - 10}`} 
+                              stroke={pin.color} 
+                              strokeWidth="2" 
+                              strokeDasharray="2 2"
+                            />
+                          </motion.g>
+                        )}
+                      </AnimatePresence>
                     </g>
                   );
                 })}
