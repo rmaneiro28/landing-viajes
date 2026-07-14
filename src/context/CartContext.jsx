@@ -12,14 +12,14 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem('jandyCart');
+    const savedCart = localStorage.getItem('carameloCart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('jandyCart', JSON.stringify(cartItems));
+    localStorage.setItem('carameloCart', JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (product) => {
@@ -54,8 +54,8 @@ export const CartProvider = ({ children }) => {
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
   const checkoutWithWhatsApp = ({ name, phone }) => {
-    const phoneNumber = '584123397066'; // Change to actual Jandy Tours number
-    const messageHeader = `¡Hola Jandy Tours! 👋 Soy ${name || 'un cliente'}. Mi teléfono es ${phone || 'no proporcionado'}. Deseo realizar la reserva de los siguientes paquetes:\n\n`;
+    const phoneNumber = '584242511630'; // Change to actual Caramelo Tours number
+    const messageHeader = `¡Hola Caramelo Tours! 👋 Soy ${name || 'un cliente'}. Mi teléfono es ${phone || 'no proporcionado'}. Deseo realizar la reserva de los siguientes paquetes:\n\n`;
     const itemsList = cartItems
       .map((item) => `- *${item.title}* (${item.quantity}x) - $${item.price * item.quantity}`)
       .join('\n');

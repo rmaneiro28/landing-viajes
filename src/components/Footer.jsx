@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Instagram, Facebook, Mail, Phone, MapPin, Send, MessageCircle, Twitter } from 'lucide-react';
+import logo from '../assets/Logo.png';
 
 const Footer = () => {
   return (
@@ -12,7 +13,7 @@ const Footer = () => {
           {/* Logo & Intro */}
           <div className="space-y-10">
             <Link to="/" className="flex items-center gap-2 group shrink-0">
-               <img src="/logo.png" alt="Jandy Tours Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
+               <img src={logo} alt="Caramelo Tours Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
             <p className="text-slate-500 font-semibold italic text-sm leading-relaxed max-w-[280px]">
                Creamos experiencias inolvidables alrededor del mundo desde 2010. Tu aventura comienza aquí.
@@ -59,7 +60,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
            <p className="text-[11px] font-bold text-slate-300 italic">
-              © 2024 Jandy Tours. Todos los derechos reservados.
+              © 2024 Caramelo Tours. Todos los derechos reservados.
            </p>
 
            <div className="flex items-center gap-8">

@@ -35,7 +35,7 @@ const guides = [
 
 const AboutPage = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-[#f8fafc]">
       {/* About Hero */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -46,7 +46,7 @@ const AboutPage = () => {
            <motion.h1 
              initial={{ opacity: 0, y: 20 }}
              animate={{ opacity: 1, y: 0 }}
-             className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight"
+             className="font-display text-5xl md:text-7xl font-black text-white mb-6 leading-tight"
            >
              Nuestra Pasión por <br /> <span className="text-brand-teal italic">Venezuela</span>
            </motion.h1>
@@ -76,13 +76,16 @@ const AboutPage = () => {
             
             <div className="space-y-8">
                <span className="text-brand-teal font-black uppercase tracking-[0.2em] text-[11px] block animate-bounce-horizontal">Nuestra Historia</span>
-               <h2 className="text-4xl md:text-5xl font-black text-brand-dark leading-tight">Desde el corazón de <br /> <span className="text-brand-teal italic">los Tepuyes</span></h2>
+               <h2 className="font-display text-4xl md:text-5xl font-black text-brand-dark leading-tight">Desde el corazón de <br /> <span className="text-brand-teal italic">los Tepuyes</span></h2>
                <div className="space-y-6 text-slate-500 font-semibold text-lg italic leading-relaxed">
                   <p>
-                    Jandy Tours nació hace más de una década con un sueño simple: mostrar al mundo el tesoro escondido que es Venezuela. Comenzamos como un pequeño grupo de exploradores apasionados por la Gran Sabana y hoy nos hemos convertido en la agencia referente de ecoturismo en la región.
+                    Somos Caramelo Tours, una empresa dedicada al turismo en nuestra amada Venezuela 🇻🇪. Te ofrecemos la mejor opción para relajarte y disfrutar de las maravillas de nuestro país.
                   </p>
                   <p>
-                    Creemos que viajar no es solo ver paisajes, sino transformarse a través del contacto directo con la tierra y las comunidades locales. Cada tour que diseñamos es un compromiso con la conservación y el respeto por nuestra biodiversidad.
+                    Nos dedicamos al servicio turístico integral en modalidad de Full Day con todo incluido, estadías y camping tanto en playa como en montaña. Anímate y ven con nosotros a conocer los más hermosos, mágicos y divertidos lugares de Venezuela.
+                  </p>
+                  <p className="text-brand-teal font-black not-italic text-xl">
+                    ✨ ¡La dulce manera de viajar! ✨
                   </p>
                </div>
             </div>
@@ -115,7 +118,7 @@ const AboutPage = () => {
 
       {/* Why Us Section Reuse */}
       <section className="py-32 px-6 max-w-7xl mx-auto text-center">
-         <h2 className="text-4xl md:text-5xl font-black text-brand-dark mb-24">¿Por qué elegirnos?</h2>
+         <h2 className="font-display text-4xl md:text-5xl font-black text-brand-dark mb-24 italic">¿Por qué <span className="text-brand-teal">elegirnos</span>?</h2>
          <div className="grid md:grid-cols-4 gap-12">
             {[
               { icon: <ShieldCheck className="w-8 h-8" />, t: 'Seguridad' },
@@ -136,11 +139,11 @@ const AboutPage = () => {
       {/* Our Guides Grid */}
       <section className="py-32 px-6 bg-brand-dark overflow-hidden relative">
          <div className="max-w-7xl mx-auto relative z-10">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
-               <div>
-                  <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-4">Nuestros Guías</h2>
-                  <p className="text-white/50 text-xl italic font-medium">El alma de Jandy Tours. Personas apasionadas que <br /> dedican su vida a compartir la belleza de nuestra tierra.</p>
-               </div>
+             <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+                <div>
+                   <h2 className="font-display text-4xl md:text-5xl font-black text-white leading-tight mb-4 italic">Nuestros <span className="text-brand-teal">Guías</span></h2>
+                   <p className="text-white/50 text-xl italic font-medium">El alma de Caramelo Tours. Personas apasionadas que <br /> dedican su vida a compartir la belleza de nuestra tierra.</p>
+                </div>
                <button className="bg-white text-brand-dark px-10 py-5 rounded-3xl font-black uppercase tracking-widest text-sm hover:bg-brand-teal hover:text-white transition-all shadow-xl shadow-black/20">
                   Conoce al equipo completo
                </button>
@@ -172,7 +175,7 @@ const AboutPage = () => {
 
       {/* CTA Bottom */}
       <section className="py-40 px-6 text-center max-w-4xl mx-auto">
-         <h2 className="text-4xl md:text-6xl font-black text-brand-dark mb-10 leading-tight">¿Listo para tu próxima aventura?</h2>
+         <h2 className="font-display text-4xl md:text-6xl font-black text-brand-dark mb-10 leading-tight italic">¿Listo para tu <span className="text-brand-teal">próxima aventura</span>?</h2>
          <p className="text-xl text-slate-500 font-semibold italic mb-16 leading-relaxed">Únete a nosotros y descubre por qué Venezuela es el paraíso mejor guardado del mundo.</p>
          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button className="bg-brand-teal text-white px-12 py-6 rounded-[2.5rem] font-black uppercase tracking-widest text-sm hover:scale-95 transition-all shadow-2xl shadow-teal-500/20">Ver Tours Disponibles</button>

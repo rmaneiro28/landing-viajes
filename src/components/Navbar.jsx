@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Menu, X, Heart, MessageCircle } from 'lucide-react';
 import { useFavorites } from '../context/FavoritesContext';
+import logo from '../assets/Logo.png';
 
 const Navbar = () => {
   const { favorites } = useFavorites();
@@ -42,7 +43,7 @@ const Navbar = () => {
   const isNavTransparent = !isScrolled && location.pathname === '/';
 
   const openWhatsAppQuick = () => {
-    const phoneNumber = '584123397066';
+    const phoneNumber = '584242511630';
     const message = encodeURIComponent('Hola Caramelo Tours, quiero consultar sobre un tour.');
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
@@ -67,7 +68,7 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-10">
           <Link to="/" className="flex items-center group shrink-0 py-1">
-            <img src="/logo.png" alt="Caramelo Tours Logo" className="h-9 w-auto object-contain transition-transform group-hover:scale-110 group-hover:drop-shadow-2xl" />
+            <img src={logo} alt="Caramelo Tours Logo" className="h-9 w-auto object-contain transition-transform group-hover:scale-110 group-hover:drop-shadow-2xl" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-10">

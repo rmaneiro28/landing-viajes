@@ -8,8 +8,10 @@ import {
    ArrowLeft, Star, MapPin, ShieldCheck, CheckCircle2,
    MessageCircle, Users, ChevronRight,
    Heart, Share2, Sun, Compass, Wind,
-   Coffee, Plane, Hotel, Phone, Cloud, CloudRain
+   Coffee, Plane, Hotel, Phone, Cloud, CloudRain,
+   Calendar, ArrowUpRight, AlertCircle, Clock
 } from 'lucide-react';
+import { AIRLINE_MAPPINGS } from '../components/AirlinesWidget';
 
 const getWeatherDescription = (code) => {
    if (code === undefined || code === null) return 'Tropical';
@@ -244,7 +246,7 @@ const TourDetailsPage = () => {
                   {/* Tabs */}
                   <div>
                      <div className="flex gap-1 bg-white p-1 rounded-2xl border border-amber-100 shadow-sm mb-8 overflow-x-auto">
-                        {['itinerario', 'incluye', 'agencias'].map(tab => (
+                        {['itinerario', 'incluye', 'agencias', 'aerolineas'].map(tab => (
                            <button
                               key={tab}
                               onClick={() => setActiveTab(tab)}
@@ -252,7 +254,7 @@ const TourDetailsPage = () => {
                                  ? 'bg-brand-teal text-white shadow-md shadow-teal-500/20'
                                  : 'text-slate-400 hover:text-brand-dark'}`}
                            >
-                              {tab === 'agencias' ? '🏢 Agencias' : tab === 'itinerario' ? '🗺️ Itinerario' : '✅ Incluye'}
+                              {tab === 'agencias' ? '🏢 Agencias' : tab === 'itinerario' ? '🗺️ Itinerario' : tab === 'incluye' ? '✅ Incluye' : '✈️ Aerolíneas'}
                            </button>
                         ))}
                      </div>
@@ -344,6 +346,52 @@ const TourDetailsPage = () => {
                                        </a>
                                     </div>
                                  ))}
+                              </div>
+                           )}
+
+                           {/* AEROLINEAS */}
+                           {activeTab === 'aerolineas' && (
+                              <div className="space-y-4">
+                                 <p className="text-sm text-slate-500 italic mb-6">Opciones de vuelo directo o conexiones recomendadas para llegar a <strong>{tour.title}</strong>.</p>
+                                 {(AIRLINE_MAPPINGS[tour.id] || []).length > 0 ? (
+                                    (AIRLINE_MAPPINGS[tour.id] || []).map((airline, idx) => (
+                                       <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-100 hover:border-brand-teal/30 hover:shadow-md transition-all">
+                                          <div className="flex items-center gap-4">
+                                             <div className="w-10 h-10 rounded-xl bg-brand-dark text-brand-teal flex items-center justify-center font-black tracking-widest text-[11px] shrink-0">
+                                                {airline.logoText}
+                                             </div>
+                                             <div>
+                                                <div className="flex items-center gap-2">
+                                                   <p className="font-black text-brand-dark text-sm">{airline.name}</p>
+                                                   <span className="bg-slate-50 border border-slate-100 text-slate-400 font-bold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full">{airline.type}</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-4 mt-1.5">
+                                                   <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                                                      <Calendar className="w-3 h-3 text-brand-teal" /> {airline.freq}
+                                                   </span>
+                                                   <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                                                      <Clock className="w-3 h-3 text-brand-teal" /> {airline.duration}
+                                                   </span>
+                                                </div>
+                                             </div>
+                                          </div>
+                                          <a
+                                             href={airline.url}
+                                             target="_blank"
+                                             rel="noopener noreferrer"
+                                             className="shrink-0 inline-flex items-center gap-1 bg-brand-teal text-brand-dark px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all shadow-sm"
+                                          >
+                                             Reservar <ArrowUpRight className="w-3 h-3" />
+                                          </a>
+                                       </div>
+                                    ))
+                                 ) : (
+                                    <div className="text-center py-10 border border-dashed border-slate-200 bg-white rounded-2xl">
+                                       <Plane className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                                       <p className="text-sm font-black text-brand-dark">Sin conexiones directas</p>
+                                       <p className="text-xs text-slate-400 font-semibold mt-1">Este destino requiere principalmente transporte terrestre o acuático.</p>
+                                    </div>
+                                 )}
                               </div>
                            )}
                         </motion.div>

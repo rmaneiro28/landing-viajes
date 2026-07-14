@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check local storage for existing session
-    const savedUser = localStorage.getItem('jandy_user');
+    const savedUser = localStorage.getItem('caramelo_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -24,12 +24,12 @@ export const AuthProvider = ({ children }) => {
       joinDate: new Date().toISOString(),
     };
     setUser(newUser);
-    localStorage.setItem('jandy_user', JSON.stringify(newUser));
+    localStorage.setItem('caramelo_user', JSON.stringify(newUser));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('jandy_user');
+    localStorage.removeItem('caramelo_user');
   };
 
   return (

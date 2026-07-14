@@ -14,17 +14,17 @@ const PackagesPage = () => {
     : TOURS.filter(p => p.category === activeCategory);
 
   return (
-    <div className="pt-28 pb-32 bg-white min-h-screen">
+    <div className="pt-28 pb-32 bg-[#f8fafc] min-h-screen">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div className="max-w-xl">
-          <span className="text-brand-teal font-black uppercase tracking-[0.25em] text-[11px] mb-4 block">
+          <span className="text-brand-teal font-black uppercase tracking-[0.25em] text-[11px] mb-4 block italic">
               Destinos · Caramelo Tours
             </span>
-            <h1 className="text-5xl md:text-7xl font-black text-brand-dark leading-[0.95] mb-6 tracking-tighter italic">
-              Experiencias
+            <h1 className="font-display text-5xl md:text-7xl font-black text-brand-dark leading-[0.95] mb-6 tracking-tighter italic">
+              Nuestras <span className="text-brand-teal">Experiencias</span>
             </h1>
             <p className="text-slate-500 font-semibold text-base leading-relaxed max-w-md">
               Conectamos viajeros con las mejores operadoras y guías turísticos de Venezuela.
@@ -67,7 +67,7 @@ const PackagesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 16 }}
                 transition={{ duration: 0.35, delay: i * 0.05 }}
-                className="bg-white group flex flex-col rounded-2xl overflow-hidden border border-slate-100 shadow-md hover:shadow-xl transition-shadow duration-500"
+                className="bg-white group flex flex-col rounded-[2.5rem] overflow-hidden border border-slate-50 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-teal-500/10 hover:-translate-y-1 transition-all duration-500"
               >
                 {/* Image */}
                 <div className="relative overflow-hidden rounded-t-2xl" style={{ aspectRatio: '4/3' }}>

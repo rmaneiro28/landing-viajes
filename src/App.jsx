@@ -26,10 +26,10 @@ function App() {
         <CartDrawer />
         <div className="min-h-screen bg-white selection:bg-brand-teal selection:text-white overflow-x-hidden font-sans">
           <SEO 
-            title="Jandy Tours | Tu Aventura Premium en Venezuela"
+            title="Caramelo Tours | Tu Aventura Premium en Venezuela"
             description="Especialistas en ecoturismo y viajes de lujo por toda Venezuela desde 2010. Descubre Los Roques, Canaima, Salto Ángel y más con expertos locales."
             image="/salto_angel.png"
-            keywords="jandy tours, venezuela, viajes, turismo, los roques, canaima, salto angel, merida, vacaciones lux, ecoturismo"
+            keywords="caramelo tours, venezuela, viajes, turismo, los roques, canaima, salto angel, merida, vacaciones lux, ecoturismo"
           />
           
           <Navbar />

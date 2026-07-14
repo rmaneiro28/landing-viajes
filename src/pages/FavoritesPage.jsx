@@ -12,7 +12,7 @@ const FavoritesPage = () => {
   return (
     <div className="pt-24 md:pt-32 pb-20 bg-[#f8fafc] min-h-screen">
       <SEO 
-        title="Mis Favoritos | Jandy Tours"
+        title="Mis Favoritos | Caramelo Tours"
         description="Explora tus destinos guardados y planifica tu próxima aventura premium en Venezuela."
       />
       
@@ -24,7 +24,7 @@ const FavoritesPage = () => {
               <ArrowLeft size={14} />
               Volver a Destinos
             </Link>
-            <h1 className="text-4xl md:text-5xl font-black text-brand-dark tracking-tighter italic">
+            <h1 className="font-display text-4xl md:text-5xl font-black text-brand-dark tracking-tighter italic">
               Mis <span className="text-brand-teal">Favoritos</span>
             </h1>
             <p className="text-slate-400 font-bold italic text-sm">

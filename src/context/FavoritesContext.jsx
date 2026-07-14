@@ -12,12 +12,12 @@ export const useFavorites = () => {
 
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState(() => {
-    const savedFavorites = localStorage.getItem('jandyFavorites');
+    const savedFavorites = localStorage.getItem('carameloFavorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('jandyFavorites', JSON.stringify(favorites));
+    localStorage.setItem('carameloFavorites', JSON.stringify(favorites));
   }, [favorites]);
 
   const toggleFavorite = (tour) => {

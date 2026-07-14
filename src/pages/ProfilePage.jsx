@@ -87,7 +87,7 @@ const ProfilePage = () => {
       <div className="px-6 mt-8">
          <div className="bg-brand-dark rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
             <div className="relative z-10 text-center">
-               <h3 className="text-xl font-black mb-2 uppercase">Jandy Explorer</h3>
+               <h3 className="text-xl font-black mb-2 uppercase">Caramelo Explorer</h3>
                <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Membresía Activa</p>
                <div className="w-full h-1 bg-white/10 rounded-full mb-2">
                   <div className="w-3/4 h-full bg-brand-teal"></div>
