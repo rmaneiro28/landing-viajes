@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Target, Eye, Heart, ShieldCheck, Leaf, Users, Headphones, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Target, Eye, Heart, ShieldCheck, Leaf, Users, Headphones, ArrowRight, ChevronDown } from 'lucide-react';
 
 const stats = [
   { label: 'Años Exp.', value: '15+' },
@@ -56,8 +57,17 @@ const AboutPage = () => {
         </div>
       </section>
 
+      {/* Breadcrumbs */}
+      <div className="max-w-7xl mx-auto px-6 pt-12">
+        <nav className="hidden md:flex items-center gap-2 text-xs text-slate-400 font-bold uppercase tracking-widest">
+          <Link to="/" className="hover:text-brand-teal transition-colors">Inicio</Link>
+          <ChevronDown className="w-3 h-3 -rotate-90" />
+          <span className="text-slate-600">Nosotros</span>
+        </nav>
+      </div>
+
       {/* Story Section */}
-      <section className="py-32 px-6 max-w-7xl mx-auto">
+      <section className="pt-20 pb-32 px-6 max-w-7xl mx-auto">
          <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="relative">
                <div className="aspect-[4/5] rounded-[4rem] overflow-hidden shadow-3xl shadow-slate-200">

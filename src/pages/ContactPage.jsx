@@ -1,15 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Globe, Send, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Globe, Send, Search, ChevronDown } from 'lucide-react';
 
 const ContactPage = () => {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* Contact Hero */}
-      <section className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src="/merida.png" alt="Contact Hero" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
         <div className="relative z-10 text-center px-6">
            <motion.h1 
@@ -23,8 +24,17 @@ const ContactPage = () => {
         </div>
       </section>
 
+      {/* Breadcrumbs */}
+      <div className="max-w-7xl mx-auto px-6 pt-12">
+        <nav className="hidden md:flex items-center gap-2 text-xs text-slate-400 font-bold uppercase tracking-widest">
+          <Link to="/" className="hover:text-brand-teal transition-colors">Inicio</Link>
+          <ChevronDown className="w-3 h-3 -rotate-90" />
+          <span className="text-slate-600">Contacto</span>
+        </nav>
+      </div>
+
       {/* Contact Content */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
+      <section className="pt-12 pb-24 px-6 max-w-7xl mx-auto">
          <div className="flex flex-col lg:flex-row gap-24 items-start">
             
             {/* Contact Form Card */}

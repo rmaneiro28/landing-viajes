@@ -105,8 +105,26 @@ const DestinationsPage = () => {
   }, []);
 
   return (
-    <div className="pt-24 md:pt-28 pb-20 bg-[#f8fafc] min-h-screen">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="bg-[#f8fafc] min-h-screen">
+      {/* Destinations Hero */}
+      <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/los_roques.png" alt="Destinos Hero" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+        <div className="relative z-10 text-center px-6">
+           <motion.h1 
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight not-italic"
+           >
+             Nuestros <span className="text-brand-teal not-italic">Destinos</span>
+           </motion.h1>
+           <p className="text-xl text-white/70 font-medium">Explora la magia y diversidad de paisajes geográficos de Venezuela de la mano de operadoras y guías de primer nivel.</p>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-6 pt-12 pb-20">
         
         {/* Breadcrumbs */}
         <nav className="hidden md:flex items-center gap-2 text-xs text-slate-400 font-bold uppercase tracking-widest mb-8">
@@ -114,21 +132,6 @@ const DestinationsPage = () => {
           <ChevronDown className="w-3 h-3 -rotate-90" />
           <span className="text-slate-600">Explorar Destinos</span>
         </nav>
-
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-          <div className="max-w-xl">
-            <span className="text-brand-teal font-black uppercase tracking-[0.25em] text-[11px] mb-4 block italic">
-              Destinos · Caramelo Tours
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-black text-brand-dark leading-[0.95] mb-6 tracking-tighter italic">
-              Nuestros <span className="text-brand-teal">Destinos</span>
-            </h1>
-            <p className="text-slate-500 font-semibold text-base leading-relaxed max-w-md">
-              Explora la magia y diversidad de paisajes geográficos de Venezuela de la mano de operadoras y guías de primer nivel.
-            </p>
-          </div>
-        </div>
 
         {/* Mobile Filter & Sort Bar - Simplified & Functional */}
         <div className="lg:hidden sticky top-20 z-40 -mx-6 px-6 py-4 mb-8 bg-[#f8fafc]/80 backdrop-blur-md border-b border-white/50">
