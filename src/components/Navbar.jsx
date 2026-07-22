@@ -68,7 +68,7 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-10">
           <Link to="/" className="flex items-center group shrink-0 py-1">
-            <img src={logo} alt="Caramelo Tours Logo" className="h-12 md:h-14 w-auto object-contain transition-transform group-hover:scale-110 group-hover:drop-shadow-2xl" />
+            <img src={logo} alt="Caramelo Tours Logo" className="h-16 md:h-20 lg:h-24 w-auto object-contain transition-transform group-hover:scale-105 group-hover:drop-shadow-2xl" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-10">
@@ -150,7 +150,7 @@ const Navbar = () => {
             <div className="flex-1 flex flex-col p-8 overflow-y-auto">
               <div className="flex items-center justify-between mb-16 shrink-0">
                 <Link to="/" className="flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
-                  <img src="/logo.png" alt="Logo" className="h-14 w-auto" />
+                  <img src={logo} alt="Caramelo Tours Logo" className="h-16 md:h-20 w-auto object-contain" />
                 </Link>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}

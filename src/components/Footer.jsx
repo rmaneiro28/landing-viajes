@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Logo & Intro */}
           <div className="space-y-10">
             <Link to="/" className="flex items-center gap-2 group shrink-0">
-               <img src={logo} alt="Caramelo Tours Logo" className="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
+               <img src={logo} alt="Caramelo Tours Logo" className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
             <p className="text-slate-500 font-semibold italic text-sm leading-relaxed max-w-[280px]">
                Creamos experiencias inolvidables alrededor del mundo desde 2010. Tu aventura comienza aquí.
